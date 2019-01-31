@@ -1,0 +1,33 @@
+Package: scrapeR
+Type: Package
+Title: Extraction and cleaning of data from the web
+Version: 0.1.1
+Authors@R: c(
+  person("Carlos","Aguero", email = "carlos.aguero@promidat.com", role = c("cre"))
+  )
+Description: This package seeks to simplify the process of extracting and cleaning data from the web as well as social networks such as Facebook and Twitter.
+Depends:
+  R (>= 3.1)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+License: GPL-3
+Suggests: 
+    testthat
+Imports: 
+    RSelenium,
+    crayon,
+    progress,
+    rlang,
+    stringr,
+    wdman,
+    dplyr,
+    tidyr,
+    purrr,
+    glue,
+    lubridate,
+    rvest,
+    tibble,
+    xml2,
+    gender,
+    magrittr
