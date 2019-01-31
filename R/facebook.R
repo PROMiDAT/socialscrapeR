@@ -512,3 +512,61 @@ get_user_info <- function(x = NULL, username = NA_character_) {
   error = function() return(NULL)
   )
 }
+
+
+#' get facebook page info
+#'
+#' @param x sesson
+#' @param page_id page id
+#'
+#' @export
+get_page_info <- function(x = NULL, page_id = NA_character_) {
+  url <- paste0("https://m.facebook.com/",page_id,"/community/")
+  navigate(x = x, url = url, silence = T)
+  page <- xml2::read_html(x$session$getPageSource()[[1]])
+
+  likes <-page %>%
+    rvest::html_node(xpath = ".//div[@class = '_a58 _a5w _9_7 _2rgt _1j-f']/div[1]/div") %>%  rvest::html_text()
+
+  likes <- dplyr::case_when(
+    stringr::str_detect(likes,"mil$") ~{
+      stringr::str_extract(likes,"\\d+(\\.\\d+)?") %>%
+        as.integer() %>%
+        base::`*`(.,1000) %>%
+        as.character()
+    },
+    stringr::str_detect(likes,"mill\\.$") ~ {
+      stringr::str_extract(likes,"\\d+(\\,\\d+)?") %>%
+        stringr::str_replace("\\,","\\.") %>% as.numeric() %>% base::`*`(.,1000000) %>%
+        as.character()
+    },
+    T ~ stringr::str_remove(likes,"\\."))
+
+  likes <- as.integer(likes)
+  followers <- page %>%
+    rvest::html_node(xpath = ".//div[@class = '_a58 _a5w _9_7 _2rgt _1j-f']/div[3]/div") %>%  rvest::html_text()
+
+  followers <- dplyr::case_when(
+    stringr::str_detect(followers,"mil$") ~{
+      stringr::str_extract(followers,"\\d+(\\.\\d+)?") %>%
+        as.integer() %>%
+        base::`*`(.,1000) %>%
+        as.character()
+    },
+    stringr::str_detect(followers,"mill\\.$") ~ {
+      stringr::str_extract(followers,"\\d+(\\,\\d+)?") %>%
+        stringr::str_replace("\\,","\\.") %>% as.numeric() %>% base::`*`(.,1000000) %>%
+        as.character()
+    },
+    T ~ stringr::str_remove(followers,"\\."))
+
+  followers <- as.integer(followers)
+
+  category <- page %>% rvest::html_node(xpath = ".//div[@class = '_a58 _9_7 _2rgt _1j-f _2rgt']/div[2]/div[2]") %>%
+    rvest::html_text(trim = T)
+
+  name <- page %>% rvest::html_node(xpath = ".//div[@class = '_a58 _9_7 _2rgt _1j-f _2rgt']/div[2]/div") %>%
+    rvest::html_text(trim = T)
+
+  tibble::tibble(name, category, likes, followers, date_time = lubridate::now())
+}
