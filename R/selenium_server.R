@@ -199,6 +199,7 @@ load_more <- function(x, xpath = NA_character_) {
   }
 
   x$session$setImplicitWaitTimeout(milliseconds = 3000)
+  aux <- 0L
   while (T) {
     btn <- tryCatch({
       suppressMessages(x$session$findElement(using = "xpath", value = xpath))
@@ -210,12 +211,20 @@ load_more <- function(x, xpath = NA_character_) {
     if (is.null(btn)) {
       break()
     }
-    tryCatch(suppressMessages(btn$clickElement()),
+
+    tryCatch({
+      suppressMessages(btn$clickElement())
+      aux <- aux + 1
+      },
              error = function(msg) {
                return(NULL)
              }
     )
+    if(aux > 500L) {
+      break()
+    }
   }
+
 }
 
 #' Extract email
