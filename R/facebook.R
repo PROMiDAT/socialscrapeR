@@ -70,7 +70,7 @@ get_reactions_by_user_ <- function(x = NULL, post_id = NA_character_) {
   out <- tryCatch({
     url <- paste0("https://m.facebook.com/ufi/reaction/profile/browser/?ft_ent_identifier=", post_id)
     navigate(x = x, url = url, silence = T)
-    load_more(x, xpath = ".//a[@data-sigil = 'touchable ajaxify']")
+    load_more(x, xpath = "//*[@id='reaction_profile_pager']/a")
 
     page <- xml2::read_html(x$session$getPageSource()[[1]])
 
@@ -526,7 +526,8 @@ get_page_info <- function(x = NULL, page_id = NA_character_) {
   page <- xml2::read_html(x$session$getPageSource()[[1]])
 
   likes <-page %>%
-    rvest::html_node(xpath = ".//div[@class = '_a58 _a5w _9_7 _2rgt _1j-f']/div[1]/div") %>%  rvest::html_text()
+    rvest::html_node(xpath = ".//div[@class = '_a58 _a5w _9_7 _2rgt _1j-f']/div[1]/div") %>%
+    rvest::html_text()
 
   likes <- dplyr::case_when(
     stringr::str_detect(likes,"mil$") ~{
@@ -544,7 +545,8 @@ get_page_info <- function(x = NULL, page_id = NA_character_) {
 
   likes <- as.integer(likes)
   followers <- page %>%
-    rvest::html_node(xpath = ".//div[@class = '_a58 _a5w _9_7 _2rgt _1j-f']/div[3]/div") %>%  rvest::html_text()
+    rvest::html_node(xpath = ".//div[@class = '_a58 _a5w _9_7 _2rgt _1j-f']/div[3]/div") %>%
+    rvest::html_text()
 
   followers <- dplyr::case_when(
     stringr::str_detect(followers,"mil$") ~{
