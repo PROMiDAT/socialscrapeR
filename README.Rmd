@@ -1,0 +1,54 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+# socialscrapeR
+
+The purpose of this package is to make the process of extracting data from social networks such as facebook and twitter simple.
+
+El propósito de este paquete es hacer sencillo el proceso de extracción de datos de redes sociales como facebook y twitter.
+
+## Installation
+
+You can install the dev version of socialscrapeR from Github with:
+
+Puedes instalar la versión de desarrollo con la instrucción:
+
+``` r
+install.packages("devtools")
+devtools::install_github("PROMiDAT/socialscrapeR")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+## basic example code
+```
+
+What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+
+```{r cars}
+summary(cars)
+```
+
+You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
+
+You can also embed plots, for example:
+
+```{r pressure, echo = FALSE}
+plot(pressure)
+```
+
+In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!

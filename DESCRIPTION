@@ -1,9 +1,13 @@
-Package: scrapeR
+Package: socialscrapeR
 Type: Package
 Title: Extraction and cleaning of data from the web
 Version: 0.1.1
 Authors@R: c(
-  person("Carlos","Aguero", email = "carlos.aguero@promidat.com", role = c("cre"))
+  person("Oldemar","Rodriguez", email = "oldemar.rodriguez@promidat.com", role = c("aut")),
+  person("Carlos","Aguero", email = "carlos.aguero@promidat.com", role = c("cre")),
+  person("Andres","Navarro", email = "andres.navarro@promidat.com", role = c("ctb")),
+  person("Diego","Jimenez", email = "diego.jimenez@promidat.com", role = c("ctb")),
+  person("Emanuel","Chacon", email = "jose.chacon@promidat.com", role = c("ctb"))
   )
 Description: This package seeks to simplify the process of extracting and cleaning data from the web as well as social networks such as Facebook and Twitter.
 Depends:
