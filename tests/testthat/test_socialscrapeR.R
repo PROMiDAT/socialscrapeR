@@ -11,8 +11,8 @@ test_that("incorrect credentials",{
 })
 
 invisible(capture.output(session <- login_facebook(x = session,
-                                                   username = getOption("email"),
-                                                   password = getOption("pass"))))
+                                                   username = keyring::key_get("facebook_email"),
+                                                   password = keyring::key_get("facebook_pass"))))
 
 test_that("Correct credentials",{
   expect_is(session, "scrapeR_session")
