@@ -40,7 +40,7 @@ start_server <- function(port = 4567L, headless = T, verbose = FALSE, settings.i
     )
     session$open(silent = TRUE)
     cat(crayon::`%+%`(
-      crayon::green("\u2714"),
+      crayon::green(" \u2714"),
       paste0(" Se inici\u00F3 con \u00E9xito el servidor de Selenium en el puerto ", port, ".\n")
     ))
 
@@ -92,7 +92,8 @@ stop_server <- function(x) {
   tryCatch({
     x$session$close()
     x$server$stop()
-    cat(crayon::`%+%`(crayon::green("\u2714"), " Se cerr\u00F3 con \u00E9xito el servidor de Selenium"))
+    cat(crayon::`%+%`(crayon::green(" \u2714"), " Se cerr\u00F3 con \u00E9xito el servidor de Selenium.\n"))
+    return(NULL)
   },
   error = function(msg) {
     rlang::abort(msg$message)
