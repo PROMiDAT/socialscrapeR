@@ -266,7 +266,7 @@ get_comments_ <- function(x = NULL, page_id = NA_character_, post_id = NA_charac
     text[text == user_name] <- "image"
     text <- stringr::str_to_lower(text)
 
-    tibble::tibble(page_id, post_id, text, full_name, user_name)
+    tibble::tibble(page_id, post_id, full_name, user_name, text)
   }, error = function(msg) {
     rlang::abort(paste0("\u2716 No se pudo obtener los comentarios del post ", post_id))
   })
