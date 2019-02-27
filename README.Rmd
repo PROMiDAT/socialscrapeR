@@ -37,15 +37,13 @@ session <- start_server()
 
 ## Iniciar sesión en Facebook
 
-```{r facebook_login, echo=F}
-invisible(capture.output(login_facebook(session, username = "dev.aguero@gmail.com", password = "anx21ysi_face.")))
-cat("Se está redirigiendo el navegador a la url: https://m.facebook.com ...\n")
-cat("Se inición sesión en https://m.facebook.com con el usuario *****************\n")
+```{r facebook_login}
+login_facebook(x = session,
+               username = keyring::key_get("facebook_email"),
+               password = keyring::key_get("facebook_pass"))
 ```
 
-```{r facebook_login2, eval=F}
-login_facebook(session, username = "<email>", password = "<password>")
-```
+Nota: Para evitar exponer tus credenciales en tu código se recomienda el uso de paquete [keying](https://github.com/r-lib/keyring).
 
 ## Función `get_fb_posts`
 

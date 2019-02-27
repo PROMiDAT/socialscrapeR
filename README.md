@@ -23,18 +23,21 @@ Iniciar el servidor de selenium
 ``` r
 library(socialscrapeR)
 session <- start_server()
-#> ✔ Se inició con éxito el servidor de Selenium en el puerto 4567.
+#>  ✔ Se inició con éxito el servidor de Selenium en el puerto 4567.
 ```
 
 Iniciar sesión en Facebook
 --------------------------
 
-    #> Se está redirigiendo el navegador a la url: https://m.facebook.com ...
-    #> Se inición sesión en https://m.facebook.com con el usuario *****************
-
 ``` r
-login_facebook(session, username = "<email>", password = "<password>")
+login_facebook(x = session,
+               username = keyring::key_get("facebook_email"),
+               password = keyring::key_get("facebook_pass"))
+#> Se está redirigiendo el navegador a la url: https://m.facebook.com ...
+#> Se inición sesión en https://m.facebook.com con el usuario dev.aguero@gmail.com
 ```
+
+Nota: Para evitar exponer tus credenciales en tu código se recomienda el uso de paquete [keying](https://github.com/r-lib/keyring).
 
 Función `get_fb_posts`
 ----------------------
@@ -60,11 +63,11 @@ tibble::glimpse(df)
 #> Observations: 10
 #> Variables: 6
 #> $ page_id    <chr> "265769886798719", "265769886798719", "26576988679871…
-#> $ post_id    <chr> "2710316119010738", "2710289569013393", "271026106234…
-#> $ post_text  <chr> "deportes: tras la escandalosa goleada 5 a 1 frente a…
-#> $ n_comments <int> 11, 5, 5, 7, 487, 396, 15, 295, 8, 82
-#> $ n_shares   <int> 2, 24, 0, 3, 347, 81, 4, 189, 11, 11
-#> $ date_time  <dttm> 2019-02-27 21:12:35, 2019-02-27 20:58:29, 2019-02-27…
+#> $ post_id    <chr> "2710460312329652", "2710430988999251", "271039755566…
+#> $ post_text  <chr> "el sector expresó que nadie está pidiendo que no exi…
+#> $ n_comments <int> 2, 0, 121, 16, 26, 28, 10, 5, 7, 604
+#> $ n_shares   <int> 2, 0, 46, 10, 17, 4, 37, 4, 4, 503
+#> $ date_time  <dttm> 2019-02-27 22:47:33, 2019-02-27 22:26:08, 2019-02-27…
 ```
 
 La función `get_fb_post` retorna los siguiente valores.
@@ -86,24 +89,24 @@ tibble::glimpse(df)
 #> Observations: 10
 #> Variables: 13
 #> $ page_id           <chr> "265769886798719", "265769886798719", "2657698…
-#> $ post_id           <chr> "2710316119010738", "2710289569013393", "27102…
-#> $ post_text         <chr> "deportes: tras la escandalosa goleada 5 a 1 f…
-#> $ n_comments        <int> 11, 5, 5, 7, 487, 396, 15, 295, 8, 82
-#> $ n_shares          <int> 2, 24, 0, 3, 347, 81, 4, 189, 11, 11
-#> $ like              <int> 15, 30, 36, 25, 132, 920, 97, 191, 115, 651
-#> $ love              <int> 2, 0, 0, 0, 10, 115, 9, 6, 2, 45
-#> $ wow               <int> 0, 20, 24, 0, 45, 27, 3, 78, 1, 5
-#> $ haha              <int> 32, 1, 0, 13, 176, 28, 11, 12, 2, 28
-#> $ sad               <int> 1, 122, 31, 2, 7, 4, 0, 31, 0, 3
-#> $ angry             <int> 1, 1, 0, 0, 584, 648, 0, 224, 0, 0
-#> $ reactions_by_user <list> [<tbl_df[51 x 3]>, <tbl_df[174 x 3]>, <tbl_df…
-#> $ date_time         <dttm> 2019-02-27 21:12:35, 2019-02-27 20:58:29, 201…
+#> $ post_id           <chr> "2710460312329652", "2710430988999251", "27103…
+#> $ post_text         <chr> "el sector expresó que nadie está pidiendo que…
+#> $ n_comments        <int> 2, 0, 121, 16, 26, 28, 10, 5, 7, 604
+#> $ n_shares          <int> 2, 0, 46, 10, 17, 4, 37, 4, 4, 503
+#> $ like              <int> 20, 10, 467, 41, 68, 30, 40, 50, 33, 183
+#> $ love              <int> 1, 0, 72, 0, 2, 3, 2, 0, 0, 10
+#> $ wow               <int> 0, 0, 30, 2, 9, 1, 24, 34, 0, 53
+#> $ haha              <int> 0, 0, 268, 1, 2, 59, 1, 0, 13, 232
+#> $ sad               <int> 0, 0, 56, 3, 11, 1, 161, 49, 2, 11
+#> $ angry             <int> 0, 0, 10, 5, 1, 4, 1, 0, 0, 761
+#> $ reactions_by_user <list> [<tbl_df[21 x 3]>, <tbl_df[10 x 3]>, NULL, <t…
+#> $ date_time         <dttm> 2019-02-27 22:47:33, 2019-02-27 22:26:08, 201…
 tibble::glimpse(df$reactions_by_user[[1]])
-#> Observations: 51
+#> Observations: 21
 #> Variables: 3
-#> $ full_name     <chr> "Silvia Ajon Jiron", "Ricardo Ferraro", "Joseph Or…
-#> $ user_name     <chr> "/silvia.ajonjiron", "/ricardo.ferraro.1671", "/jo…
-#> $ type_reaction <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+#> $ full_name     <chr> "Hazel Fernández Armador", "Johanna Miranda", "Mar…
+#> $ user_name     <chr> "/hazel.fernandezarmador", "/johanna.miranda.3597"…
+#> $ type_reaction <chr> "like", "like", "like", "like", "like", "like", "l…
 ```
 
 La función `get_fb_post` retorna los siguiente valores.
@@ -135,19 +138,19 @@ tibble::glimpse(df)
 #> Observations: 10
 #> Variables: 14
 #> $ page_id           <chr> "265769886798719", "265769886798719", "2657698…
-#> $ post_id           <chr> "2710316119010738", "2710289569013393", "27102…
-#> $ post_text         <chr> "deportes: tras la escandalosa goleada 5 a 1 f…
-#> $ n_comments        <int> 11, 6, 5, 7, 491, 398, 15, 295, 8, 82
-#> $ n_shares          <int> 2, 24, 0, 3, 353, 81, 4, 189, 11, 11
-#> $ like              <int> 16, 30, 36, 25, 133, 924, 97, 191, 116, 651
-#> $ love              <int> 2, 0, 0, 0, 10, 115, 9, 6, 2, 45
-#> $ wow               <int> 0, 20, 24, 0, 46, 27, 3, 78, 1, 5
-#> $ haha              <int> 32, 1, 0, 13, 181, 28, 11, 12, 2, 28
-#> $ sad               <int> 1, 125, 32, 2, 7, 4, 0, 31, 0, 3
-#> $ angry             <int> 1, 1, 0, 0, 589, 653, 0, 224, 0, 0
-#> $ reactions_by_user <list> [<tbl_df[52 x 3]>, <tbl_df[178 x 3]>, <tbl_df…
-#> $ comments          <list> [<tbl_df[6 x 3]>, <tbl_df[6 x 3]>, <tbl_df[4 …
-#> $ date_time         <dttm> 2019-02-27 21:12:35, 2019-02-27 20:58:29, 201…
+#> $ post_id           <chr> "2710460312329652", "2710430988999251", "27103…
+#> $ post_text         <chr> "el sector expresó que nadie está pidiendo que…
+#> $ n_comments        <int> 2, 0, 121, 16, 26, 29, 10, 5, 7, 604
+#> $ n_shares          <int> 2, 0, 47, 10, 17, 4, 37, 4, 4, 506
+#> $ like              <int> 22, 11, 472, 41, 69, 30, 40, 50, 33, 183
+#> $ love              <int> 1, 0, 72, 0, 2, 3, 2, 0, 0, 10
+#> $ wow               <int> 0, 0, 31, 2, 9, 1, 24, 34, 0, 53
+#> $ haha              <int> 0, 0, 269, 1, 2, 59, 1, 0, 13, 232
+#> $ sad               <int> 0, 0, 56, 3, 11, 1, 162, 49, 2, 11
+#> $ angry             <int> 0, 0, 10, 5, 1, 4, 1, 0, 0, 764
+#> $ reactions_by_user <list> [<tbl_df[23 x 3]>, <tbl_df[11 x 3]>, <tbl_df[…
+#> $ comments          <list> [<tbl_df[2 x 3]>, NULL, <tbl_df[104 x 3]>, <t…
+#> $ date_time         <dttm> 2019-02-27 22:47:33, 2019-02-27 22:26:08, 201…
 ```
 
 La función `get_fb_post` retorna los siguiente valores.
@@ -173,8 +176,8 @@ La función `get_fb_post` retorna los siguiente valores.
     -   **text** : texto del comentario
 -   **date\_time** : hora y fecha en la que se realizó la publicación
 
-Extraer las últimas 10 publicaciones de una pagina de Facebook, información sobre las reacciones, comentarios de la publicación y los usuario que compartieron la aplicación.
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Extraer las últimas 10 publicaciones de una pagina de Facebook, información sobre las reacciones, comentarios de la publicación y los usuario que compartieron la publicación.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ``` r
 df <- get_fb_posts(session, pagename = "crhoy.comnoticias", n = 10, reactions = T, commets = T, shares = T)
@@ -183,20 +186,20 @@ tibble::glimpse(df)
 #> Observations: 10
 #> Variables: 15
 #> $ page_id           <chr> "265769886798719", "265769886798719", "2657698…
-#> $ post_id           <chr> "2710360732339610", "2710316119010738", "27102…
-#> $ post_text         <chr> "tratarán de reubicarlos en otras empresas", "…
-#> $ n_comments        <int> 1, 11, 6, 5, 7, 505, 404, 15, 297, 8
-#> $ n_shares          <int> 2, 2, 24, 1, 3, 363, 82, 4, 190, 11
-#> $ like              <int> 6, 16, 31, 38, 26, 138, 933, 98, 191, 116
-#> $ love              <int> 0, 3, 1, 0, 0, 10, 116, 9, 6, 2
-#> $ wow               <int> 1, 0, 21, 24, 0, 47, 28, 3, 78, 1
-#> $ haha              <int> 1, 32, 1, 0, 13, 187, 31, 11, 12, 2
-#> $ sad               <int> 1, 1, 127, 33, 2, 7, 5, 0, 31, 0
-#> $ angry             <int> 0, 2, 1, 0, 0, 599, 660, 0, 228, 0
-#> $ reactions_by_user <list> [<tbl_df[9 x 3]>, <tbl_df[54 x 3]>, <tbl_df[1…
-#> $ comments          <list> [<tbl_df[2 x 3]>, <tbl_df[6 x 3]>, <tbl_df[6 …
-#> $ shares            <list> [<tbl_df[2 x 2]>, <tbl_df[2 x 2]>, <tbl_df[7 …
-#> $ date_time         <dttm> 2019-02-27 21:41:28, 2019-02-27 21:12:35, 201…
+#> $ post_id           <chr> "2710460312329652", "2710430988999251", "27103…
+#> $ post_text         <chr> "el sector expresó que nadie está pidiendo que…
+#> $ n_comments        <int> 2, 0, 124, 17, 27, 29, 10, 5, 7, 605
+#> $ n_shares          <int> 2, 0, 48, 11, 17, 4, 37, 4, 4, 509
+#> $ like              <int> 27, 12, 481, 41, 69, 30, 40, 51, 33, 186
+#> $ love              <int> 1, 0, 76, 0, 2, 3, 2, 0, 0, 10
+#> $ wow               <int> 0, 0, 32, 2, 9, 1, 24, 35, 0, 53
+#> $ haha              <int> 0, 0, 272, 1, 2, 60, 1, 0, 13, 234
+#> $ sad               <int> 0, 0, 57, 3, 11, 1, 163, 49, 2, 11
+#> $ angry             <int> 0, 0, 11, 5, 1, 4, 1, 0, 0, 772
+#> $ reactions_by_user <list> [<tbl_df[28 x 3]>, <tbl_df[12 x 3]>, <tbl_df[…
+#> $ comments          <list> [<tbl_df[2 x 3]>, NULL, <tbl_df[105 x 3]>, <t…
+#> $ shares            <list> [NULL, NULL, <tbl_df[16 x 2]>, <tbl_df[4 x 2]…
+#> $ date_time         <dttm> 2019-02-27 22:47:33, 2019-02-27 22:26:08, 201…
 ```
 
 La función `get_fb_post` retorna los siguiente valores.
@@ -229,5 +232,6 @@ La función `get_fb_post` retorna los siguiente valores.
 
 ``` r
 stop_server(session)
-#> ✔ Se cerró con éxito el servidor de Selenium
+#>  ✔ Se cerró con éxito el servidor de Selenium.
+#> NULL
 ```
