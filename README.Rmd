@@ -1,5 +1,7 @@
 ---
 output: github_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -14,13 +16,9 @@ knitr::opts_chunk$set(
 ```
 # socialscrapeR
 
-The purpose of this package is to make the process of extracting data from social networks such as facebook and twitter simple.
-
 El propósito de este paquete es hacer sencillo el proceso de extracción de datos de redes sociales como facebook y twitter.
 
-## Installation
-
-You can install the dev version of socialscrapeR from Github with:
+## Instalación
 
 Puedes instalar la versión de desarrollo con la instrucción:
 
@@ -28,27 +26,140 @@ Puedes instalar la versión de desarrollo con la instrucción:
 install.packages("devtools")
 devtools::install_github("PROMiDAT/socialscrapeR")
 ```
+Este paquete utiliza selenium para simular la interacción de un usuario con su cuenta de Facebook por lo que antes de comenzar se debe inicializar el servidor de selenium.
 
-## Example
+## Iniciar el servidor de selenium 
 
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
-## basic example code
+```{r iniciar_servidor}
+library(socialscrapeR)
+session <- start_server()
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+## Descargar publicaciones de una pagina de FaceBook
 
-```{r cars}
-summary(cars)
+```{r facebook_login, echo=F}
+invisible(capture.output(login_facebook(session, username = "dev.aguero@gmail.com", password = "anx21ysi_face.")))
+cat("Se está redirigiendo el navegador a la url: https://m.facebook.com ...\n")
+cat("Se inición sesión en https://m.facebook.com con el usuario *****************\n")
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
+```{r facebook_login2, eval=F}
+login_facebook(session, username = "email", password = "password")
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
+## Extraer las últimas 10 publicaciones de una pagina de Facebook 
+
+```{r}
+df <- get_fb_posts(session, pagename = "crhoy.comnoticias", n = 10)
+tibble::glimpse(df)
+```
+
+La función `get_fb_post` retorna los siguiente valores.
+
+  + **page_id** : identificador único de la página
+  + **post_id** : identificador único de la publicación
+  + **post_text** : contenido del texto principal de la publicación
+  + **n_comments** : cantidad de comentarios
+  + **n_shares** : cantidad de compartidos
+  + **date_time** : hora y fecha en la que se realizó la publicación
+  
+  
+## Extraer las últimas 10 publicaciones de una pagina de Facebook e información sobre las reacciones de la publicación.
+
+```{r}
+df <- get_fb_posts(session, pagename = "crhoy.comnoticias", n = 10, reactions = T)
+tibble::glimpse(df)
+tibble::glimpse(df$reactions_by_user[[1]])
+```
+
+La función `get_fb_post` retorna los siguiente valores.
+
+  + **page_id** : identificador único de la página
+  + **post_id** : identificador único de la publicación
+  + **post_text** : contenido del texto principal de la publicación
+  + **n_comments** : cantidad de comentarios
+  + **n_shares** : cantidad de compartidos
+  + **like** : cantidad de "me gusta"
+  + **love** : cantidad de "me encanta"
+  + **wow** : cantidad de "me sorprende"
+  + **haha** : cantidad de "me da risa"
+  + **sad** : cantidad de "me tristese"
+  + **angry** : cantidad de "me enoja"
+  + **reactions_by_user** : 
+    + **full_name** : nombre real del usuario
+    + **username** : nombre de la cuenta del usuario
+    + **type_reaction** : reacción hecha por el usuario
+  + **date_time** : hora y fecha en la que se realizó la publicación
+
+
+## Extraer las últimas 10 publicaciones de una pagina de Facebook, información sobre las reacciones y comentarios de la publicación.
+
+```{r}
+df <- get_fb_posts(session, pagename = "crhoy.comnoticias", n = 10, reactions = T, commets = T)
+tibble::glimpse(df)
+```
+
+La función `get_fb_post` retorna los siguiente valores.
+
+  + **page_id** : identificador único de la página
+  + **post_id** : identificador único de la publicación
+  + **post_text** : contenido del texto principal de la publicación
+  + **n_comments** : cantidad de comentarios
+  + **n_shares** : cantidad de compartidos
+  + **like** : cantidad de "me gusta"
+  + **love** : cantidad de "me encanta"
+  + **wow** : cantidad de "me sorprende"
+  + **haha** : cantidad de "me da risa"
+  + **sad** : cantidad de "me tristese"
+  + **angry** : cantidad de "me enoja"
+  + **reactions_by_user** : 
+    + **full_name** : nombre del usuario
+    + **username** : nombre de la cuenta del usuario
+    + **type_reaction** : reacción hecha por el usuario
+  + **comments** : 
+    + **full_name** : nombre del usuario
+    + **user_name** : nombre de la cuenta del usuario
+    + **text** : texto del comentario
+  + **date_time** : hora y fecha en la que se realizó la publicación
+
+## Extraer las últimas 10 publicaciones de una pagina de Facebook, información sobre las reacciones, comentarios de la publicación y los usuario que compartieron la aplicación.
+
+```{r}
+df <- get_fb_posts(session, pagename = "crhoy.comnoticias", n = 10, reactions = T, commets = T, shares = T)
+tibble::glimpse(df)
+```
+
+La función `get_fb_post` retorna los siguiente valores.
+
+  + **page_id** : identificador único de la página
+  + **post_id** : identificador único de la publicación
+  + **post_text** : contenido del texto principal de la publicación
+  + **n_comments** : cantidad de comentarios
+  + **n_shares** : cantidad de compartidos
+  + **like** : cantidad de "me gusta"
+  + **love** : cantidad de "me encanta"
+  + **wow** : cantidad de "me sorprende"
+  + **haha** : cantidad de "me da risa"
+  + **sad** : cantidad de "me tristese"
+  + **angry** : cantidad de "me enoja"
+  + **reactions_by_user** : 
+    + **full_name** : nombre del usuario
+    + **username** : nombre de la cuenta del usuario
+    + **type_reaction** : reacción hecha por el usuario
+  + **comments** : 
+    + **full_name** : nombre del usuario
+    + **user_name** : nombre de la cuenta del usuario
+    + **text** : texto del comentario
+  + **shares** :
+    + **ful_name** : nombre del usuario
+    + **user_name** : nombre de la cuenta de usuario
+  + **date_time** : hora y fecha en la que se realizó la publicación
+
+
+### Cerrar el servidor 
+
+```{r}
+stop_server(session)
+```
+
+  
