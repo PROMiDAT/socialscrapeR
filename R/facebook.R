@@ -401,24 +401,24 @@ get_fb_posts <- function(x = NULL, pagename = NA_character_, n = 10L, reactions 
   out <- tryCatch({
     url <- paste0("https://m.facebook.com/", pagename)
     x %>% navigate(url)
-    scroll_n(x, xpath = ".//div[@class = '_55wo _56bf _58k5']", n)
+    scroll_n(x, xpath = ".//article", n)
     page <- xml2::read_html(x$session$getPageSource()[[1]])
 
-    post_text <- rvest::html_nodes(page, xpath = ".//div[@class = '_55wo _56bf _58k5']") %>%
+    post_text <- rvest::html_nodes(page, xpath = ".//article") %>%
       rvest::html_node(xpath = ".//div[@class = 'story_body_container']") %>%
       rvest::html_node(xpath = ".//div[1]//span/p") %>%
       rvest::html_text() %>%
       stringr::str_to_lower() %>%
       stringr::str_remove_all("\\p{So}|\\p{Cn}")
 
-    n_comments <- rvest::html_nodes(page, xpath = ".//div[@class = '_55wo _56bf _58k5']") %>%
+    n_comments <- rvest::html_nodes(page, xpath = ".//article") %>%
       rvest::html_node(xpath = ".//footer//div[@class = '_1fnt']/span[@data-sigil = 'comments-token']") %>%
       rvest::html_text() %>%
       stringr::str_extract("\\d+") %>%
       as.integer() %>%
       ifelse(is.na(.), 0L, .)
 
-    n_shares <- rvest::html_nodes(page, xpath = ".//div[@class = '_55wo _56bf _58k5']") %>%
+    n_shares <- rvest::html_nodes(page, xpath = ".//article") %>%
       rvest::html_node(xpath = ".//footer//div[@class = '_1fnt']//span[not(@data-sigil)]") %>%
       rvest::html_text() %>%
       stringr::str_extract("\\d+") %>%
@@ -426,7 +426,7 @@ get_fb_posts <- function(x = NULL, pagename = NA_character_, n = 10L, reactions 
       ifelse(is.na(.), 0L, .)
 
 
-    info <- rvest::html_nodes(page, xpath = ".//div[@class = '_3drp']//article") %>%
+    info <- rvest::html_nodes(page, xpath = ".//article") %>%
       rvest::html_attr("data-store") %>%
       stringr::str_remove_all("\\\\") %>%
       stringr::str_remove_all('\"')
