@@ -35,7 +35,7 @@ library(socialscrapeR)
 session <- start_server()
 ```
 
-## Descargar publicaciones de una pagina de FaceBook
+## Iniciar sesión en Facebook
 
 ```{r facebook_login, echo=F}
 invisible(capture.output(login_facebook(session, username = "dev.aguero@gmail.com", password = "anx21ysi_face.")))
@@ -44,8 +44,21 @@ cat("Se inición sesión en https://m.facebook.com con el usuario **************
 ```
 
 ```{r facebook_login2, eval=F}
-login_facebook(session, username = "email", password = "password")
+login_facebook(session, username = "<email>", password = "<password>")
 ```
+
+## Función `get_fb_posts`
+
+Esta función nos retorna un data.frame con la información de las últimas `n` publicaciones de una página, esta función recibe los siguiente parámetros:
+
+  + x = una conexión con selenium creada con la función start_server en la que ya se inicio sesión en una cuenta de Facebook con la función `login_facebook`.
+  + **pagename**: nombre de la página
+  + **n** : cantidad mínima de publicaciones a descargar
+  + **reactions** si el valor es TRUE se retorna en un data.frame información sobre las reacciones de los usuario a la publicación
+  + **comments** : si el valor es TRUE se retorna en un data.frame el contenido de los comentarios de la publicación
+  + **shares** :  si el valor es TRUE se retorna en un data.frame información sobre los usuarios que compartieron la publicación
+  
+Veamos algunos ejemplos :
 
 ## Extraer las últimas 10 publicaciones de una pagina de Facebook 
 
@@ -83,7 +96,7 @@ La función `get_fb_post` retorna los siguiente valores.
   + **love** : cantidad de "me encanta"
   + **wow** : cantidad de "me sorprende"
   + **haha** : cantidad de "me da risa"
-  + **sad** : cantidad de "me tristese"
+  + **sad** : cantidad de "me entristece"
   + **angry** : cantidad de "me enoja"
   + **reactions_by_user** : 
     + **full_name** : nombre real del usuario
@@ -110,7 +123,7 @@ La función `get_fb_post` retorna los siguiente valores.
   + **love** : cantidad de "me encanta"
   + **wow** : cantidad de "me sorprende"
   + **haha** : cantidad de "me da risa"
-  + **sad** : cantidad de "me tristese"
+  + **sad** : cantidad de "me entristece"
   + **angry** : cantidad de "me enoja"
   + **reactions_by_user** : 
     + **full_name** : nombre del usuario
@@ -140,7 +153,7 @@ La función `get_fb_post` retorna los siguiente valores.
   + **love** : cantidad de "me encanta"
   + **wow** : cantidad de "me sorprende"
   + **haha** : cantidad de "me da risa"
-  + **sad** : cantidad de "me tristese"
+  + **sad** : cantidad de "me entristece"
   + **angry** : cantidad de "me enoja"
   + **reactions_by_user** : 
     + **full_name** : nombre del usuario

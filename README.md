@@ -26,15 +26,29 @@ session <- start_server()
 #> ✔ Se inició con éxito el servidor de Selenium en el puerto 4567.
 ```
 
-Descargar publicaciones de una pagina de FaceBook
--------------------------------------------------
+Iniciar sesión en Facebook
+--------------------------
 
     #> Se está redirigiendo el navegador a la url: https://m.facebook.com ...
     #> Se inición sesión en https://m.facebook.com con el usuario *****************
 
 ``` r
-login_facebook(session, username = "email", password = "password")
+login_facebook(session, username = "<email>", password = "<password>")
 ```
+
+Función `get_fb_posts`
+----------------------
+
+Esta función nos retorna un data.frame con la información de las últimas `n` publicaciones de una página, esta función recibe los siguiente parámetros:
+
+-   x = una conexión con selenium creada con la función start\_server en la que ya se inicio sesión en una cuenta de Facebook con la función `login_facebook`.
+-   **pagename**: nombre de la página
+-   **n** : cantidad mínima de publicaciones a descargar
+-   **reactions** si el valor es TRUE se retorna en un data.frame información sobre las reacciones de los usuario a la publicación
+-   **comments** : si el valor es TRUE se retorna en un data.frame el contenido de los comentarios de la publicación
+-   **shares** : si el valor es TRUE se retorna en un data.frame información sobre los usuarios que compartieron la publicación
+
+Veamos algunos ejemplos :
 
 Extraer las últimas 10 publicaciones de una pagina de Facebook
 --------------------------------------------------------------
@@ -46,11 +60,11 @@ tibble::glimpse(df)
 #> Observations: 10
 #> Variables: 6
 #> $ page_id    <chr> "265769886798719", "265769886798719", "26576988679871…
-#> $ post_id    <chr> "2710234982352185", "2710206715688345", "271017404235…
-#> $ post_text  <chr> "video: américa goleó al pachuca por la copa mx", "la…
-#> $ n_comments <int> 0, 163, 277, 14, 251, 8, 81, 171, 3, 115
-#> $ n_shares   <int> 0, 94, 50, 2, 161, 10, 10, 30, 4, 78
-#> $ date_time  <dttm> 2019-02-27 20:23:58, 2019-02-27 20:05:38, 2019-02-27…
+#> $ post_id    <chr> "2710316119010738", "2710289569013393", "271026106234…
+#> $ post_text  <chr> "deportes: tras la escandalosa goleada 5 a 1 frente a…
+#> $ n_comments <int> 11, 5, 5, 7, 487, 396, 15, 295, 8, 82
+#> $ n_shares   <int> 2, 24, 0, 3, 347, 81, 4, 189, 11, 11
+#> $ date_time  <dttm> 2019-02-27 21:12:35, 2019-02-27 20:58:29, 2019-02-27…
 ```
 
 La función `get_fb_post` retorna los siguiente valores.
@@ -72,24 +86,24 @@ tibble::glimpse(df)
 #> Observations: 10
 #> Variables: 13
 #> $ page_id           <chr> "265769886798719", "265769886798719", "2657698…
-#> $ post_id           <chr> "2710234982352185", "2710206715688345", "27101…
-#> $ post_text         <chr> "video: américa goleó al pachuca por la copa m…
-#> $ n_comments        <int> 0, 163, 277, 14, 251, 8, 81, 171, 3, 115
-#> $ n_shares          <int> 0, 94, 50, 2, 161, 10, 10, 30, 4, 78
-#> $ like              <int> 2, 48, 587, 80, 160, 112, 612, 435, 7, 105
-#> $ love              <int> 0, 4, 75, 8, 6, 1, 45, 37, 0, 2
-#> $ wow               <int> 0, 20, 20, 2, 74, 1, 5, 7, 0, 28
-#> $ haha              <int> 1, 70, 20, 10, 11, 2, 24, 1, 0, 14
-#> $ sad               <int> 0, 4, 3, 0, 26, 0, 3, 2, 0, 1
-#> $ angry             <int> 0, 224, 431, 0, 195, 0, 0, 83, 0, 131
-#> $ reactions_by_user <list> [<tbl_df[3 x 3]>, <tbl_df[373 x 3]>, <tbl_df[…
-#> $ date_time         <dttm> 2019-02-27 20:23:58, 2019-02-27 20:05:38, 201…
+#> $ post_id           <chr> "2710316119010738", "2710289569013393", "27102…
+#> $ post_text         <chr> "deportes: tras la escandalosa goleada 5 a 1 f…
+#> $ n_comments        <int> 11, 5, 5, 7, 487, 396, 15, 295, 8, 82
+#> $ n_shares          <int> 2, 24, 0, 3, 347, 81, 4, 189, 11, 11
+#> $ like              <int> 15, 30, 36, 25, 132, 920, 97, 191, 115, 651
+#> $ love              <int> 2, 0, 0, 0, 10, 115, 9, 6, 2, 45
+#> $ wow               <int> 0, 20, 24, 0, 45, 27, 3, 78, 1, 5
+#> $ haha              <int> 32, 1, 0, 13, 176, 28, 11, 12, 2, 28
+#> $ sad               <int> 1, 122, 31, 2, 7, 4, 0, 31, 0, 3
+#> $ angry             <int> 1, 1, 0, 0, 584, 648, 0, 224, 0, 0
+#> $ reactions_by_user <list> [<tbl_df[51 x 3]>, <tbl_df[174 x 3]>, <tbl_df…
+#> $ date_time         <dttm> 2019-02-27 21:12:35, 2019-02-27 20:58:29, 201…
 tibble::glimpse(df$reactions_by_user[[1]])
-#> Observations: 3
+#> Observations: 51
 #> Variables: 3
-#> $ full_name     <chr> "Dino Fierro", "Randall E. Sanchez", "Seferino Oro…
-#> $ user_name     <chr> "/dino.fierro.71", "/randall.esquivelsanchez", "/s…
-#> $ type_reaction <chr> NA, NA, NA
+#> $ full_name     <chr> "Silvia Ajon Jiron", "Ricardo Ferraro", "Joseph Or…
+#> $ user_name     <chr> "/silvia.ajonjiron", "/ricardo.ferraro.1671", "/jo…
+#> $ type_reaction <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
 ```
 
 La función `get_fb_post` retorna los siguiente valores.
@@ -103,7 +117,7 @@ La función `get_fb_post` retorna los siguiente valores.
 -   **love** : cantidad de "me encanta"
 -   **wow** : cantidad de "me sorprende"
 -   **haha** : cantidad de "me da risa"
--   **sad** : cantidad de "me tristese"
+-   **sad** : cantidad de "me entristece"
 -   **angry** : cantidad de "me enoja"
 -   **reactions\_by\_user** :
     -   **full\_name** : nombre real del usuario
@@ -121,19 +135,19 @@ tibble::glimpse(df)
 #> Observations: 10
 #> Variables: 14
 #> $ page_id           <chr> "265769886798719", "265769886798719", "2657698…
-#> $ post_id           <chr> "2710234982352185", "2710206715688345", "27101…
-#> $ post_text         <chr> "video: américa goleó al pachuca por la copa m…
-#> $ n_comments        <int> 0, 182, 280, 14, 252, 8, 81, 171, 3, 115
-#> $ n_shares          <int> 0, 103, 51, 2, 162, 10, 10, 30, 4, 79
-#> $ like              <int> 4, 52, 599, 83, 160, 112, 614, 435, 7, 105
-#> $ love              <int> 0, 4, 76, 8, 6, 1, 45, 37, 0, 2
-#> $ wow               <int> 0, 21, 23, 2, 74, 1, 5, 7, 0, 28
-#> $ haha              <int> 1, 74, 20, 10, 11, 2, 24, 1, 0, 14
-#> $ sad               <int> 0, 4, 3, 0, 26, 0, 3, 2, 0, 1
-#> $ angry             <int> 0, 244, 438, 0, 195, 0, 0, 83, 0, 131
-#> $ reactions_by_user <list> [<tbl_df[5 x 3]>, <tbl_df[399 x 3]>, <tbl_df[…
-#> $ comments          <list> [<tbl_df[2 x 3]>, <tbl_df[170 x 3]>, <tbl_df[…
-#> $ date_time         <dttm> 2019-02-27 20:23:58, 2019-02-27 20:05:38, 201…
+#> $ post_id           <chr> "2710316119010738", "2710289569013393", "27102…
+#> $ post_text         <chr> "deportes: tras la escandalosa goleada 5 a 1 f…
+#> $ n_comments        <int> 11, 6, 5, 7, 491, 398, 15, 295, 8, 82
+#> $ n_shares          <int> 2, 24, 0, 3, 353, 81, 4, 189, 11, 11
+#> $ like              <int> 16, 30, 36, 25, 133, 924, 97, 191, 116, 651
+#> $ love              <int> 2, 0, 0, 0, 10, 115, 9, 6, 2, 45
+#> $ wow               <int> 0, 20, 24, 0, 46, 27, 3, 78, 1, 5
+#> $ haha              <int> 32, 1, 0, 13, 181, 28, 11, 12, 2, 28
+#> $ sad               <int> 1, 125, 32, 2, 7, 4, 0, 31, 0, 3
+#> $ angry             <int> 1, 1, 0, 0, 589, 653, 0, 224, 0, 0
+#> $ reactions_by_user <list> [<tbl_df[52 x 3]>, <tbl_df[178 x 3]>, <tbl_df…
+#> $ comments          <list> [<tbl_df[6 x 3]>, <tbl_df[6 x 3]>, <tbl_df[4 …
+#> $ date_time         <dttm> 2019-02-27 21:12:35, 2019-02-27 20:58:29, 201…
 ```
 
 La función `get_fb_post` retorna los siguiente valores.
@@ -147,7 +161,7 @@ La función `get_fb_post` retorna los siguiente valores.
 -   **love** : cantidad de "me encanta"
 -   **wow** : cantidad de "me sorprende"
 -   **haha** : cantidad de "me da risa"
--   **sad** : cantidad de "me tristese"
+-   **sad** : cantidad de "me entristece"
 -   **angry** : cantidad de "me enoja"
 -   **reactions\_by\_user** :
     -   **full\_name** : nombre del usuario
@@ -169,20 +183,20 @@ tibble::glimpse(df)
 #> Observations: 10
 #> Variables: 15
 #> $ page_id           <chr> "265769886798719", "265769886798719", "2657698…
-#> $ post_id           <chr> "2710234982352185", "2710206715688345", "27101…
-#> $ post_text         <chr> "video: américa goleó al pachuca por la copa m…
-#> $ n_comments        <int> 2, 211, 286, 14, 252, 8, 81, 171, 3, 115
-#> $ n_shares          <int> 1, 121, 51, 2, 163, 10, 10, 30, 4, 80
-#> $ like              <int> 7, 59, 614, 85, 162, 112, 617, 437, 8, 105
-#> $ love              <int> 0, 4, 79, 8, 6, 1, 45, 38, 0, 2
-#> $ wow               <int> 0, 22, 24, 2, 74, 1, 5, 7, 0, 28
-#> $ haha              <int> 2, 83, 21, 10, 11, 2, 24, 1, 0, 14
-#> $ sad               <int> 0, 4, 3, 0, 26, 0, 3, 2, 0, 1
-#> $ angry             <int> 0, 271, 450, 0, 197, 0, 0, 83, 0, 132
-#> $ reactions_by_user <list> [<tbl_df[9 x 3]>, <tbl_df[443 x 3]>, <tbl_df[…
-#> $ comments          <list> [<tbl_df[4 x 3]>, <tbl_df[196 x 3]>, <tbl_df[…
-#> $ shares            <list> [NULL, <tbl_df[30 x 2]>, <tbl_df[20 x 2]>, <t…
-#> $ date_time         <dttm> 2019-02-27 20:23:58, 2019-02-27 20:05:38, 201…
+#> $ post_id           <chr> "2710360732339610", "2710316119010738", "27102…
+#> $ post_text         <chr> "tratarán de reubicarlos en otras empresas", "…
+#> $ n_comments        <int> 1, 11, 6, 5, 7, 505, 404, 15, 297, 8
+#> $ n_shares          <int> 2, 2, 24, 1, 3, 363, 82, 4, 190, 11
+#> $ like              <int> 6, 16, 31, 38, 26, 138, 933, 98, 191, 116
+#> $ love              <int> 0, 3, 1, 0, 0, 10, 116, 9, 6, 2
+#> $ wow               <int> 1, 0, 21, 24, 0, 47, 28, 3, 78, 1
+#> $ haha              <int> 1, 32, 1, 0, 13, 187, 31, 11, 12, 2
+#> $ sad               <int> 1, 1, 127, 33, 2, 7, 5, 0, 31, 0
+#> $ angry             <int> 0, 2, 1, 0, 0, 599, 660, 0, 228, 0
+#> $ reactions_by_user <list> [<tbl_df[9 x 3]>, <tbl_df[54 x 3]>, <tbl_df[1…
+#> $ comments          <list> [<tbl_df[2 x 3]>, <tbl_df[6 x 3]>, <tbl_df[6 …
+#> $ shares            <list> [<tbl_df[2 x 2]>, <tbl_df[2 x 2]>, <tbl_df[7 …
+#> $ date_time         <dttm> 2019-02-27 21:41:28, 2019-02-27 21:12:35, 201…
 ```
 
 La función `get_fb_post` retorna los siguiente valores.
@@ -196,7 +210,7 @@ La función `get_fb_post` retorna los siguiente valores.
 -   **love** : cantidad de "me encanta"
 -   **wow** : cantidad de "me sorprende"
 -   **haha** : cantidad de "me da risa"
--   **sad** : cantidad de "me tristese"
+-   **sad** : cantidad de "me entristece"
 -   **angry** : cantidad de "me enoja"
 -   **reactions\_by\_user** :
     -   **full\_name** : nombre del usuario
