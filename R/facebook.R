@@ -26,6 +26,7 @@ login_facebook <- function(x = NULL, username = NA_character_, password = NA_cha
     abort_bad_argument(arg = "username", must = character(), not = username)
   }
   tryCatch({
+
     if (x$session$getCurrentUrl() != "https://m.facebook.com") {
       navigate(x = x, url = "https://m.facebook.com")
     }
@@ -83,12 +84,12 @@ get_reactions_by_user_ <- function(x = NULL, post_id = NA_character_) {
     type_reaction <- reactions %>% rvest::html_node(xpath = "./i") %>% rvest::html_attr("class")
 
     type_reaction <- dplyr::case_when(
-      stringr::str_detect(type_reaction, "sx_216bdc") ~ "like",
-      stringr::str_detect(type_reaction, "sx_1329b8") ~ "love",
-      stringr::str_detect(type_reaction, "sx_07c8dd") ~ "wow",
-      stringr::str_detect(type_reaction, "sx_6f3ed0") ~ "haha",
-      stringr::str_detect(type_reaction, "sx_e2bf5f") ~ "sad",
-      stringr::str_detect(type_reaction, "sx_a05db9") ~ "angry",
+      stringr::str_detect(type_reaction, "sx_7894fb") ~ "like",
+      stringr::str_detect(type_reaction, "sx_3fe212") ~ "love",
+      stringr::str_detect(type_reaction, "sx_9878e3") ~ "wow",
+      stringr::str_detect(type_reaction, "sx_f4f3d3") ~ "haha",
+      stringr::str_detect(type_reaction, "sx_081fb1") ~ "sad",
+      stringr::str_detect(type_reaction, "sx_621edf") ~ "angry",
       T ~ NA_character_
     )
     tibble::tibble(post_id, full_name, user_name, type_reaction)
@@ -151,6 +152,7 @@ get_reactions_ <- function(x = NULL, page_id = NA_character_, post_id = NA_chara
   out <- tryCatch({
     x %>% navigate(url, silence)
     page <- xml2::read_html(x$session$getPageSource()[[1]])
+
     like <- page %>%
       rvest::html_node(xpath = ".//span[@data-store = '{\"reactionType\":1}']") %>%
       rvest::html_text() %>%
