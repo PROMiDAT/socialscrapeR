@@ -84,12 +84,12 @@ get_reactions_by_user_ <- function(x = NULL, post_id = NA_character_) {
     type_reaction <- reactions %>% rvest::html_node(xpath = "./i") %>% rvest::html_attr("class")
 
     type_reaction <- dplyr::case_when(
-      stringr::str_detect(type_reaction, "sx_7894fb") ~ "like",
+      stringr::str_detect(type_reaction, "sx_00e85e") ~ "like",
       stringr::str_detect(type_reaction, "sx_3fe212") ~ "love",
-      stringr::str_detect(type_reaction, "sx_9878e3") ~ "wow",
-      stringr::str_detect(type_reaction, "sx_f4f3d3") ~ "haha",
-      stringr::str_detect(type_reaction, "sx_081fb1") ~ "sad",
-      stringr::str_detect(type_reaction, "sx_621edf") ~ "angry",
+      stringr::str_detect(type_reaction, "sx_80f1da") ~ "wow",
+      stringr::str_detect(type_reaction, "sx_e80d42") ~ "haha",
+      stringr::str_detect(type_reaction, "sx_75c744") ~ "sad",
+      stringr::str_detect(type_reaction, "sx_3fe04f") ~ "angry",
       T ~ NA_character_
     )
     tibble::tibble(post_id, full_name, user_name, type_reaction)
