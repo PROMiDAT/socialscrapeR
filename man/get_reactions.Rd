@@ -4,8 +4,8 @@
 \alias{get_reactions}
 \title{Get reactions}
 \usage{
-get_reactions(x = NULL, page_id = NA_character_, post_id = NA_character_,
-  silence = T)
+get_reactions(x = NULL, page_id = NA_character_,
+  post_id = NA_character_, silence = T)
 }
 \arguments{
 \item{x}{scrapeR_session}

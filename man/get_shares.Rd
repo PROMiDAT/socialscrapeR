@@ -4,7 +4,8 @@
 \alias{get_shares}
 \title{Get shares}
 \usage{
-get_shares(x = NULL, page_id = NA_character_, post_id = NA_character_)
+get_shares(x = NULL, page_id = NA_character_,
+  post_id = NA_character_)
 }
 \arguments{
 \item{x}{session}

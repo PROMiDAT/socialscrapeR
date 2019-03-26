@@ -4,7 +4,8 @@
 \alias{get_shares_}
 \title{get_shares_}
 \usage{
-get_shares_(x = NULL, page_id = NA_character_, post_id = NA_character_)
+get_shares_(x = NULL, page_id = NA_character_,
+  post_id = NA_character_)
 }
 \description{
 get_shares_

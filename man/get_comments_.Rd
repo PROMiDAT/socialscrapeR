@@ -4,7 +4,8 @@
 \alias{get_comments_}
 \title{get_comments_}
 \usage{
-get_comments_(x = NULL, page_id = NA_character_, post_id = NA_character_)
+get_comments_(x = NULL, page_id = NA_character_,
+  post_id = NA_character_)
 }
 \description{
 get_comments_

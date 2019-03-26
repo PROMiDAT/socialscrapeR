@@ -20,7 +20,7 @@ start_server <- function(port = 4567L, headless = T, verbose = FALSE, settings.i
   }
 
   out <- tryCatch({
-    server <- wdman::selenium(port = port, verbose = verbose)
+    server <- wdman::selenium(port = port, verbose = verbose, chromever = "73.0.3683.68")
     extras <- list(
       chromeOptions = list(
         args = c("--disable-gpu", "--window-size=600,600"),

@@ -4,8 +4,8 @@
 \alias{get_reactions_}
 \title{get_reactions_}
 \usage{
-get_reactions_(x = NULL, page_id = NA_character_, post_id = NA_character_,
-  silence = T)
+get_reactions_(x = NULL, page_id = NA_character_,
+  post_id = NA_character_, silence = T)
 }
 \description{
 get_reactions_

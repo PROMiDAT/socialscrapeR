@@ -4,7 +4,8 @@
 \alias{get_comments}
 \title{Get Facebook comments}
 \usage{
-get_comments(x = NULL, page_id = NA_character_, post_id = NA_character_)
+get_comments(x = NULL, page_id = NA_character_,
+  post_id = NA_character_)
 }
 \arguments{
 \item{x}{scrapeR_session objetc}
