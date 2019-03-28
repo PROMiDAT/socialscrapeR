@@ -67,7 +67,7 @@ start_server <- function(port = 4567L, headless = T, verbose = FALSE, settings.i
     }
     if (stringr::str_detect(msg$message, "port = \\d+ is already in use.")) {
       message <- paste0(
-        "\u2716 Error: El servidor de Selenium no se pudo iniciar porque el puesto ",
+        "\u2716 Error: El servidor de Selenium no se pudo iniciar porque el puerto ",
         port, " ya est\u00E1 en uso, para solucionar esto reinicie su sesi\u00F3n de R.\n"
       )
       rlang::abort(message)
