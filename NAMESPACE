@@ -2,6 +2,7 @@
 
 export("%>%")
 export(find_emails)
+export(get_bio)
 export(get_comments)
 export(get_fb_posts)
 export(get_page_info)

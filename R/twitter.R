@@ -1,4 +1,4 @@
-#' Login on Twitter
+ #' Login on Twitter
 #'
 #' @param x session
 #' @param username username
@@ -98,4 +98,68 @@ get_tw_posts <- function(x, page_id = NA_character_, n = NA_integer_) {
   })
   return(out)
 }
+
+#' get_bio_
+#' @importFrom xml2 read_html
+#' @importFrom rvest html_node html_nodes html_text
+#' @importFrom tibble tibble
+#' @importFrom rlang abort
+#' @keywords internal
+get_bio_ <- function(x = NULL, page_id = NA_character_) {
+  tryCatch({
+    page_url <- paste0("https://twitter.com/", page_id)
+    x$session$navigate(page_url)
+    page <- xml2::read_html(x$session$getPageSource()[[1]])
+
+    name <- page %>% html_node(xpath = "//h1[contains(@class,'ProfileHeaderCard-name')]/a") %>%
+      html_text(trim = T)
+
+    bio <- page %>% html_node(xpath = "//p[contains(@class,'ProfileHeaderCard-bio')]") %>%
+      html_text(trim = T)
+
+    location <- page %>% html_node(xpath = "//span[contains(@class,'ProfileHeaderCard-locationText')]") %>%
+      html_text(trim = T)
+
+    join_date <- page %>% html_node(xpath = "//span[contains(@class,'ProfileHeaderCard-joinDateText')]") %>%
+      html_text(trim = T)
+
+    following <- page %>% html_nodes(xpath = "//li[contains(@class,'ProfileNav-item--following')]") %>%
+      html_text(trim = T) %>%
+      str_extract("\\d+(\\,\\d+)?.+")
+
+    followers <- page %>% html_nodes(xpath = "//li[contains(@class,'ProfileNav-item--followers')]") %>%
+      html_text(trim = T) %>%
+      str_extract("\\d+(\\,\\d+)?.+")
+
+    tweets <- page %>% html_nodes(xpath = "//li[contains(@class,'ProfileNav-item--tweets')]") %>%
+      html_text(trim = T) %>%
+      str_extract("\\d+(\\,\\d+)?.+")
+
+    tibble::tibble(name,bio,location,join_date,following, followers,tweets)
+
+  })
+}
+
+#' Get Twitter bios
+#'
+#' @param x session
+#' @param page_id page_id
+#' @importFrom progress progress_bar
+#' @importFrom purrr map_df
+#' @export
+get_bio <- function(x = NULL, page_id = NA_character_) {
+  pb <- progress::progress_bar$new(
+    format = "Extrayendo infomaci\u00F3n de las cuentas ... :current/:total cuentas ",
+    clear = FALSE, width = 90, total = length(page_id)
+  )
+
+  out <- purrr::map_df(page_id, ~ {
+    out <- get_bio_(x,.)
+    pb$tick()
+    return(out)
+  })
+
+  return(out)
+}
+
 
