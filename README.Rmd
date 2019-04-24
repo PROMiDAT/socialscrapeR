@@ -32,15 +32,15 @@ Este paquete utiliza selenium para simular la interacción de un usuario con su 
 
 ```{r iniciar_servidor}
 library(socialscrapeR)
-session <- start_server()
+session <- start_server(port = 4568L)
 ```
 
 ## Iniciar sesión en Facebook
 
 ```{r facebook_login}
 login_facebook(x = session,
-               username = keyring::key_get("facebook_email"),
-               password = keyring::key_get("facebook_pass"))
+               username = "dev.aguero@gmail.com",
+               password = "anx21ysi_face.")
 ```
 
 Nota: Para evitar exponer tus credenciales en tu código se recomienda el uso de paquete [keying](https://github.com/r-lib/keyring).

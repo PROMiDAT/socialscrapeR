@@ -28,7 +28,8 @@ login_facebook <- function(x = NULL, username = NA_character_, password = NA_cha
   tryCatch({
 
     if (x$session$getCurrentUrl() != "https://m.facebook.com") {
-      navigate(x = x, url = "https://m.facebook.com")
+      #navigate(x = x, url = "https://m.facebook.com")
+      x$session$navigate("https://m.facebook.com")
     }
     x$session$setImplicitWaitTimeout(milliseconds = 10000)
     email.input <- x$session$findElement(using = "xpath", value = ".//input[@id = 'm_login_email']")
@@ -111,7 +112,7 @@ get_reactions_by_user_ <- function(x = NULL, post_id = NA_character_) {
 #' @export
 get_reactions_by_user <- function(x = NULL, post_id = NA_character_) {
   pb <- progress::progress_bar$new(
-    format = "Extrayendo reacciones por usuario [:bar :percent] :current/:total publicaciones ",
+    format = "Extrayendo reacciones por usuario ... :current/:total publicaciones ",
     clear = FALSE, width = 90, total = length(post_id)
   )
   out <- purrr::map_df(post_id, ~ {
@@ -120,6 +121,20 @@ get_reactions_by_user <- function(x = NULL, post_id = NA_character_) {
     return(out)
   })
   return(out)
+}
+
+#' @keywords internal
+fb_parse_number <- function(x) {
+  if(is.na(x)){
+    return(0L)
+  }
+  if(stringr::str_detect(x,"\\d+\\,\\d+\\smil")){
+    x <- readr::parse_number(x)
+    x <- x * 100L
+  }else {
+    x <- readr::parse_number(x)
+  }
+  return(x)
 }
 
 #' get_reactions_
@@ -150,47 +165,46 @@ get_reactions_ <- function(x = NULL, page_id = NA_character_, post_id = NA_chara
   url <- paste0("https://m.facebook.com/ufi/reaction/profile/browser/?ft_ent_identifier=", post_id)
 
   out <- tryCatch({
-    x %>% navigate(url, silence)
+    x$session$navigate(url)
     page <- xml2::read_html(x$session$getPageSource()[[1]])
 
     like <- page %>%
       rvest::html_node(xpath = ".//span[@data-store = '{\"reactionType\":1}']") %>%
       rvest::html_text() %>%
-      as.integer() %>%
-      ifelse(is.na(.), 0L, .)
+      fb_parse_number()
+
     love <- page %>%
       rvest::html_node(xpath = ".//span[@data-store = '{\"reactionType\":2}']") %>%
       rvest::html_text() %>%
-      as.integer() %>%
-      ifelse(is.na(.), 0L, .)
+      fb_parse_number()
+
     wow <- page %>%
       rvest::html_node(xpath = ".//span[@data-store = '{\"reactionType\":3}']") %>%
       rvest::html_text() %>%
-      as.integer() %>%
-      ifelse(is.na(.), 0L, .)
+      fb_parse_number()
+
     haha <- page %>%
       rvest::html_node(xpath = ".//span[@data-store = '{\"reactionType\":4}']") %>%
-      rvest::html_text() %>%
-      as.integer() %>%
-      ifelse(is.na(.), 0L, .)
+      rvest::html_text()  %>%
+      fb_parse_number()
+
     sad <- page %>%
       rvest::html_node(xpath = ".//span[@data-store = '{\"reactionType\":7}']") %>%
       rvest::html_text() %>%
-      as.integer() %>%
-      ifelse(is.na(.), 0L, .)
+      fb_parse_number()
+
     angry <- page %>%
       rvest::html_node(xpath = ".//span[@data-store = '{\"reactionType\":8}']") %>%
       rvest::html_text() %>%
-      as.integer() %>%
-      ifelse(is.na(.), 0L, .)
-
-    reactions <- get_reactions_by_user_(x = x, post_id = post_id)
-    reactions <- tidyr::nest(reactions, -post_id)
-    reactions <- dplyr::rename(reactions, "reactions_by_user" = "data")
-
+      fb_parse_number()
+#
+#     reactions <- get_reactions_by_user_(x = x, post_id = post_id)
+#     reactions <- tidyr::nest(reactions, -post_id)
+#     reactions <- dplyr::rename(reactions, "reactions_by_user" = "data")
+#
 
     df <- tibble::tibble(page_id, post_id, like, love, wow, haha, sad, angry)
-    df <- dplyr::left_join(df, reactions, by = "post_id")
+    # df <- dplyr::left_join(df, reactions, by = "post_id")
     return(df)
   }, error = function(msg) {
     rlang::abort(paste0("\u2716 No se pudo obtener las reacciones del post ", post_id))
@@ -402,7 +416,7 @@ get_fb_posts <- function(x = NULL, pagename = NA_character_, n = 10L, reactions 
 
   out <- tryCatch({
     url <- paste0("https://m.facebook.com/", pagename)
-    x %>% navigate(url)
+    x$session$navigate(url)
     scroll_n(x, xpath = ".//article", n)
     page <- xml2::read_html(x$session$getPageSource()[[1]])
 
@@ -448,11 +462,21 @@ get_fb_posts <- function(x = NULL, pagename = NA_character_, n = 10L, reactions 
 
     df <- tibble::tibble(page_id, post_id, post_text, n_comments, n_shares, date_time)
 
-    if (reactions) {
-      reactions <- get_reactions(x = x, page_id = page_id, post_id = post_id, silence = T)
-      df <- dplyr::left_join(df, reactions, by = c("page_id", "post_id"))
+    if (T) {
+      post_reactions <- get_reactions(x = x, page_id = page_id, post_id = post_id, silence = T)
+      df <- dplyr::left_join(df, post_reactions, by = c("page_id", "post_id"))
       df <- df %>% dplyr::select(-date_time, dplyr::everything())
     }
+
+    if (reactions) {
+      reactions_by_user <- get_reactions_by_user(x = x, post_id = post_id)
+      reactions_by_user <- nest(reactions_by_user,-post_id)
+      df <- dplyr::left_join(df, reactions_by_user, by = "post_id")
+      df <- dplyr::rename(df, "reactions_by_user" = "data")
+      df <- df %>% dplyr::select(-date_time, dplyr::everything())
+
+    }
+
 
     if (commets) {
       comments <- get_comments(x = x, page_id = page_id, post_id = post_id)
