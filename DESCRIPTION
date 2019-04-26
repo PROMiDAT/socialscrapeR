@@ -34,4 +34,5 @@ Imports:
     tibble,
     xml2,
     gender,
-    magrittr
+    magrittr,
+    readr
