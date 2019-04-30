@@ -5,7 +5,7 @@
 \title{Start selenium server}
 \usage{
 start_server(port = 4567L, headless = T, verbose = FALSE,
-  settings.images = 2L)
+  settings.images = 2L, chromever. = NA)
 }
 \arguments{
 \item{port}{Port to run on}

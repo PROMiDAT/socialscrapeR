@@ -10,7 +10,7 @@
 #' @importFrom stringr str_detect
 #' @importFrom rlang abort
 #' @export
-start_server <- function(port = 4567L, headless = T, verbose = FALSE, settings.images = 2L) {
+start_server <- function(port = 4567L, headless = T, verbose = FALSE, settings.images = 2L, chromever. = NA) {
   if (!is.numeric(port)) {
     abort_bad_argument(arg = "port", must = integer(), port)
   }
@@ -20,7 +20,7 @@ start_server <- function(port = 4567L, headless = T, verbose = FALSE, settings.i
   }
 
   out <- tryCatch({
-    server <- wdman::selenium(port = port, verbose = verbose)
+    server <- wdman::selenium(port = port, verbose = verbose, chromever = ifelse(is.na(chromever.),tail(binman::list_versions("chromedriver")[[1]],2)[1],chromever.))
     extras <- list(
       chromeOptions = list(
         args = c("--disable-gpu", "--window-size=600,600"),
