@@ -150,7 +150,8 @@ get_reactions_ <- function(x = NULL, page_id = NA_character_, post_id = NA_chara
     abort_server_not_found()
   }
   if (is.na(page_id)) {
-    abort_is_na("page_id")
+
+    return(NULL)
   }
   if (!is.character(page_id)) {
     abort_bad_argument(arg = "page_id", must = character(), not = page_id)
@@ -227,7 +228,6 @@ get_reactions <- function(x = NULL, page_id = NA_character_, post_id = NA_charac
     format = "Extrayendo reacciones ... :current/:total publicaciones ",
     clear = FALSE, width = 90, total = length(post_id)
   )
-
   out <- purrr::map2_df(page_id, post_id, ~ {
     out <- get_reactions_(x = x, page_id = .x, post_id = .y, silence = silence)
     pb$tick()
