@@ -1,7 +1,7 @@
 Package: socialscrapeR
 Type: Package
 Title: Extraction and cleaning of data from the web
-Version: 0.1.1
+Version: 0.2.0
 Authors@R: c(
   person("Oldemar","Rodriguez", email = "oldemar.rodriguez@promidat.com", role = c("aut")),
   person("Carlos","Aguero", email = "carlos.aguero@promidat.com", role = c("cre")),
@@ -19,20 +19,13 @@ License: GPL-3
 Suggests: 
     testthat
 Imports: 
-    RSelenium,
-    crayon,
     progress,
-    rlang,
     stringr,
-    wdman,
-    dplyr,
-    tidyr,
     purrr,
-    glue,
     lubridate,
     rvest,
     tibble,
     xml2,
-    gender,
     magrittr,
-    readr
+    webdriver,
+    R6
