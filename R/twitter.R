@@ -28,7 +28,7 @@ tw_get_posts <- function(private, pagename = NA_character_, n = NA_integer_){
   if(private$session$getUrl() != url) {
     private$session$go(url)
   }
-  Sys.sleep(1)
+  Sys.sleep(2)
   private$scroll_n(xpath = ".//li[@data-item-type = 'tweet']", n)
   page <- xml2::read_html(private$session$getSource()[[1]])
 

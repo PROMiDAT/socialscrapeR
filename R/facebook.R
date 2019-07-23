@@ -90,8 +90,15 @@ fb_getposts <- function(private, self, pagename = NA_character_, n = NA_integer_
 #' @keywords internal
 #'
 fb_get_reactions <- function(private, post_id = NA_character_){
-  out = purrr::map_df(post_id, ~{
 
+  pb <- progress::progress_bar$new(
+    format = paste0("Extract reactions :n_posts/", length(post_id)," posts"),
+    clear = FALSE, width = 90, total = length(post_id)
+  )
+  n_posts <- 0L
+  out = purrr::map_df(post_id, ~{
+    n_posts <<- n_posts + 1
+    pb$tick(tokens = list(n_posts = n_posts))
     url <- paste0("https://m.facebook.com/ufi/reaction/profile/browser/?ft_ent_identifier=", .)
     private$session$go(url)
     page <- xml2::read_html(private$session$getSource()[[1]])
@@ -135,6 +142,7 @@ fb_get_reactions <- function(private, post_id = NA_character_){
     df <- tibble::tibble(like, love, wow, haha, sad, angry)
     return(df)
   })
+  pb$terminate()
   return(out)
 }
 
@@ -169,7 +177,7 @@ fb_get_comments <- function(private, page_id = NA_character_, post_id = NA_chara
     text[text == user_name] <- "image"
     text <- stringr::str_to_lower(text)
 
-    tibble::tibble(.x, .y, full_name, user_name, text)
+    tibble::tibble(page_id = .x, post_id = .y, full_name, user_name, text)
   })
   return(out)
 }
@@ -210,7 +218,7 @@ fb_bot = R6::R6Class(classname = "fbbot",
                      fb_login(private, username, password)
                    },
                    get_posts = function(pagename = NA_character_, n = NA_integer_, reactions = F){
-                     fb_getposts(private,self, pagename, n, reactions)
+                     fb_getposts(private, self, pagename, n, reactions)
                    },
                    get_reactions = function(post_id = NA_character_){
                      fb_get_reactions(private, post_id)
