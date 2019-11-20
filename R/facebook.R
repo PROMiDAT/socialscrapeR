@@ -7,7 +7,7 @@ start_fbbot <- function(private){
   private$session <- webdriver::Session$new(port = private$server$port)
   private$session$setTimeout(implicit = 10000)
   private$session$go("https://m.facebook.com")
-  cat(crayon::`%+%`(crayon::green("✔"), " Se inici\u00F3 con éxito el servidor."))
+  cat(crayon::`%+%`(crayon::green("✔"), " Se inici\u00F3 con éxito el servidor \n"))
 }
 
 #' @importFrom webdriver run_phantomjs Session
@@ -27,7 +27,7 @@ fb_login <- function(private, username = NA_character_, password = NA_character_
   password_input$clear()
   password_input$sendKeys(password)
 
-  cat(crayon::`%+%`(crayon::green("✔"), paste0(" Se inici\u00F3 sesi\u00F3n con el usuario ", username)))
+  cat(crayon::`%+%`(crayon::green("✔"), paste0(" Se inici\u00F3 sesi\u00F3n con el usuario ", username,"\n")))
 
 
   submit_btn = private$session$findElement(xpath = ".//button[@name = 'login']")
