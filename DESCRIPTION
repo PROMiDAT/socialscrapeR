@@ -28,4 +28,5 @@ Imports:
     xml2,
     magrittr,
     webdriver,
-    R6
+    R6,
+    crayon

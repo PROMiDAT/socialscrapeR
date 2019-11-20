@@ -5,6 +5,8 @@ start_twbot <- function(private){
   private$server <- webdriver::run_phantomjs()
   private$session <- webdriver::Session$new(port = private$server$port)
   private$session$setTimeout(implicit = 10000)
+  x <- private$session$getWindow()
+  x$setSize(600,200)
   private$session$go("https://twitter.com/login")
 }
 
@@ -15,8 +17,10 @@ tw_login <- function(private, username = NA_character_, password = NA_character_
   user_input = private$session$findElement(xpath =  ".//div[@class = 'clearfix field']/input[@name = 'session[username_or_email]']")
   user_input$clear()
   user_input$sendKeys(username)
+  Sys.sleep(3)
   password_input = private$session$findElement(xpath = ".//div[@class = 'clearfix field']/input[@type = 'password']")
   password_input$clear()
+  Sys.sleep(3)
   password_input$sendKeys(password)
 
   submit_btn = private$session$findElement(xpath = ".//button[@type = 'submit']")
@@ -28,7 +32,7 @@ tw_get_posts <- function(private, pagename = NA_character_, n = NA_integer_){
   if(private$session$getUrl() != url) {
     private$session$go(url)
   }
-  Sys.sleep(2)
+  Sys.sleep(3)
   private$scroll_n(xpath = ".//li[@data-item-type = 'tweet']", n)
   page <- xml2::read_html(private$session$getSource()[[1]])
 
@@ -111,6 +115,9 @@ tw_bot = R6::R6Class(classname = "twbot",
                        },
                        get_posts = function(pagename = NA_character_, n = NA_integer_){
                          tw_get_posts(private, pagename, n)
+                       },
+                       get_shot = function(){
+                         private$session$takeScreenshot()
                        }),
                      private = list(
                         server = NULL,
@@ -124,6 +131,7 @@ tw_bot = R6::R6Class(classname = "twbot",
                           pb$tick(tokens = list(n_posts = n_posts))
                           while (n_posts < n) {
                             private$session$executeScript("window.scrollTo(0, document.body.scrollHeight);")
+                            Sys.sleep(2)
                             n_posts <- length(private$session$findElements(xpath = xpath))
                             pb$tick(tokens = list(n_posts = n_posts))
                           }
