@@ -27,13 +27,12 @@ fb_login <- function(private, username = NA_character_, password = NA_character_
   password_input$clear()
   password_input$sendKeys(password)
 
-  cat(crayon::`%+%`(crayon::green("✔"), paste0(" Se inici\u00F3 sesi\u00F3n con el usuario ", username,"\n")))
-
-
   submit_btn = private$session$findElement(xpath = ".//button[@name = 'login']")
   submit_btn$click()
   skip <- private$session$findElement(partialLinkText =  "Ahora no")
   skip$click()
+
+  cat(crayon::`%+%`(crayon::green("✔"), paste0(" Se inici\u00F3 sesi\u00F3n con el usuario ", username,"\n")))
 }
 
 #' @importFrom xml2 read_html
@@ -232,7 +231,7 @@ fb_bot = R6::R6Class(classname = "fbbot",
                      fb_login(private, username, password)
                    },
                    get_posts = function(pagename = NA_character_, n = NA_integer_, reactions = F){
-                     fb_getposts(private, self, pagename, n, reactions)
+                     suppressWarnings(fb_getposts(private, self, pagename, n, reactions))
                    },
                    get_reactions = function(post_id = NA_character_){
                      fb_get_reactions(private, post_id)
