@@ -105,6 +105,9 @@ tw_get_posts <- function(private, pagename = NA_character_, n = NA_integer_){
 tw_bot = R6::R6Class(classname = "twbot",
                      public = list(
                        initialize = function(){
+                         if(is.null(suppressWarnings(webdriver:::find_phantom()))) {
+                           webdriver::install_phantomjs()
+                         }
                           start_twbot(private)
                        },
                        print = function(...) {

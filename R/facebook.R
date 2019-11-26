@@ -216,6 +216,9 @@ fb_get_comments <- function(private, page_id = NA_character_, post_id = NA_chara
 fb_bot = R6::R6Class(classname = "fbbot",
                  public = list(
                    initialize = function(){
+                     if(is.null(suppressWarnings(webdriver:::find_phantom()))) {
+                       webdriver::install_phantomjs()
+                     }
                       start_fbbot(private)
                    },
                    print = function(...) {
