@@ -4,8 +4,10 @@
 \alias{install_phantomjs}
 \title{Install PhantomJS}
 \usage{
-install_phantomjs(version = "2.1.1",
-  baseURL = "https://github.com/wch/webshot/releases/download/v0.3.1/")
+install_phantomjs(
+  version = "2.1.1",
+  baseURL = "https://github.com/wch/webshot/releases/download/v0.3.1/"
+)
 }
 \arguments{
 \item{version}{The version number of PhantomJS}

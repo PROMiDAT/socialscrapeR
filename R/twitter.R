@@ -8,7 +8,6 @@ start_twbot <- function(private){
   x <- private$session$getWindow()
   x$setSize(600,200)
   private$session$go("https://twitter.com/login")
-  cat(crayon::`%+%`(crayon::green("✔"), " Se inici\u00F3 con éxito el servidor \n"))
 }
 
 
