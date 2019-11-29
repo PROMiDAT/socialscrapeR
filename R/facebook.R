@@ -98,14 +98,14 @@ fb_getposts <- function(private, self, pagename = NA_character_, n = NA_integer_
 #'
 fb_get_reactions <- function(private, post_id = NA_character_){
 
-  pb <- progress::progress_bar$new(
-    format = paste0("Extract reactions :n_posts/", length(post_id)," posts"),
-    clear = FALSE, width = 90, total = length(post_id)
-  )
+  # pb <- progress::progress_bar$new(
+  #   format = paste0("Extract reactions :n_posts/", length(post_id)," posts"),
+  #   clear = FALSE, width = 90, total = length(post_id)
+  # )
   n_posts <- 0L
   out = purrr::map_df(post_id, ~{
     n_posts <<- n_posts + 1
-    pb$tick(tokens = list(n_posts = n_posts))
+    # pb$tick(tokens = list(n_posts = n_posts))
     url <- paste0("https://m.facebook.com/ufi/reaction/profile/browser/?ft_ent_identifier=", .)
     private$session$go(url)
     page <- xml2::read_html(private$session$getSource()[[1]])
@@ -149,7 +149,7 @@ fb_get_reactions <- function(private, post_id = NA_character_){
     df <- tibble::tibble(like, love, wow, haha, sad, angry)
     return(df)
   })
-  pb$terminate()
+  # pb$terminate()
   return(out)
 }
 
@@ -255,18 +255,18 @@ fb_bot = R6::R6Class(classname = "fbbot",
                      return(x)
                    },
                    scroll_n = function(xpath = NA_character_, n = NA_integer_) {
-                     pb <- progress::progress_bar$new(
-                       format = paste0("Loading posts :n_posts/", n),
-                       clear = FALSE, width = 90, total = Inf
-                     )
+                     # pb <- progress::progress_bar$new(
+                     #   format = paste0("Loading posts :n_posts/", n),
+                     #   clear = FALSE, width = 90, total = Inf
+                     # )
                      n_posts <- 0L
-                     pb$tick(tokens = list(n_posts = n_posts))
+                     # pb$tick(tokens = list(n_posts = n_posts))
                      while (n_posts < n) {
                        private$session$executeScript("window.scrollTo(0, document.body.scrollHeight);")
                        n_posts <- length(private$session$findElements(xpath = xpath))
                        pb$tick(tokens = list(n_posts = n_posts))
                      }
-                     pb$terminate()
+                     # pb$terminate()
                    },
                    load_more = function(xpath = NA_character_){
                      aux <- 0L
