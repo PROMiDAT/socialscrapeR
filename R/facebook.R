@@ -264,7 +264,7 @@ fb_bot = R6::R6Class(classname = "fbbot",
                      while (n_posts < n) {
                        private$session$executeScript("window.scrollTo(0, document.body.scrollHeight);")
                        n_posts <- length(private$session$findElements(xpath = xpath))
-                       pb$tick(tokens = list(n_posts = n_posts))
+                       # pb$tick(tokens = list(n_posts = n_posts))
                      }
                      # pb$terminate()
                    },
