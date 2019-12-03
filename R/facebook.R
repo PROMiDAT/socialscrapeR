@@ -28,7 +28,6 @@ fb_login <- function(private, username = NA_character_, password = NA_character_
 
   submit_btn = private$session$findElement(xpath = ".//button[@name = 'login']")
   submit_btn$click()
-  browser()
   skip <- NULL
   skip <- try(private$session$findElement(partialLinkText =  "Ahora no"),silent = T)
   if(any(class(skip) %in% "try-error")) {
