@@ -3,6 +3,7 @@
 \docType{package}
 \name{socialscrapeR}
 \alias{socialscrapeR}
+\alias{socialscrapeR-package}
 \title{Extraction and cleaning of data from the web}
 \description{
 Extraction and cleaning of data from the web

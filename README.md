@@ -23,24 +23,21 @@ inicializar el servidor de selenium.
 
 ``` r
 library(socialscrapeR)
-session <- start_server(port = 4568L)
-#>  ✔ Se inició con éxito el servidor de Selenium en el puerto 4568.
+bot_facebook = fb_bot$new()
 ```
 
 ## Iniciar sesión en Facebook
 
 ``` r
-login_facebook(x = session,
-               username = "usuario",
-               password = "clave")
-#> Se está redirigiendo el navegador a la url: https://m.facebook.com ...
-#> Se inición sesión en https://m.facebook.com con el usuario dev.aguero@gmail.com
+bot_facebook$login(
+  username = "******@gmai.com",
+  password = "********")
 ```
 
 Nota: Para evitar exponer tus credenciales en tu código se recomienda el
 uso de paquete [keying](https://github.com/r-lib/keyring).
 
-## Función `get_fb_posts`
+## Función `get_posts`
 
 Esta función nos retorna un data.frame con la información de las últimas
 `n` publicaciones de una página, esta función recibe los siguiente
@@ -51,193 +48,70 @@ parámetros:
     `login_facebook`.
   - **pagename**: nombre de la página
   - **n** : cantidad mínima de publicaciones a descargar
-  - **reactions** si el valor es TRUE se retorna en un data.frame
+  - **reactions**: si el valor es TRUE se retorna en un data.frame
     información sobre las reacciones de los usuario a la publicación
-  - **comments** : si el valor es TRUE se retorna en un data.frame el
-    contenido de los comentarios de la publicación
-  - **shares** : si el valor es TRUE se retorna en un data.frame
-    información sobre los usuarios que compartieron la publicación
 
-Veamos algunos ejemplos :
+Veamos algunos ejemplos
+:
 
 ## Extraer las últimas 10 publicaciones de una pagina de Facebook
 
 ``` r
-df <- get_fb_posts(session, pagename = "crhoy.comnoticias", n = 10)
-#> Se está redirigiendo el navegador a la url: https://m.facebook.com/crhoy.comnoticias ...
+df <- bot_facebook$get_posts(pagename = "ameliarueda", n = 10, reactions = T)
 tibble::glimpse(df)
 #> Observations: 13
-#> Variables: 6
-#> $ page_id    <chr> "265769886798719", "265769886798719", "26576988679871…
-#> $ post_id    <chr> "2806286759413673", "2806265406082475", "280621012275…
-#> $ post_text  <chr> "assange fue detenido hoy, tras resguardarse por 7 añ…
-#> $ n_comments <int> 0, 7, 63, 19, 5, 18, 17, 9, 36, 0, 5, 13, 169
-#> $ n_shares   <int> 2, 4, 114, 32, 7, 15, 20, 1, 4, 2, 11, 5, 104
-#> $ date_time  <dttm> 2019-04-11 16:16:29, 2019-04-11 16:05:29, 2019-04-11…
+#> Variables: 12
+#> $ page_id    <chr> "142921462922", "142921462922", "142921462922", "142921462…
+#> $ post_id    <chr> "10158463330447923", "10158463292987923", "101584630863679…
+#> $ text       <chr> "el jefe de la diplomacia de estados unidos llega hoy a co…
+#> $ n_comments <dbl> 5, 1, 11, 1, 68, 0, 87, 11, 6, 39, 24, 76, 4
+#> $ n_shares   <dbl> 1, 13, 1, 0, 11, 3, 662, 34, 2, 1, 9, 32, 4
+#> $ like       <dbl> 8, 16, 3, 5, 143, 4, 438, 93, 35, 119, 65, 203, 13
+#> $ love       <dbl> 0, 0, 0, 1, 18, 0, 10, 1, 0, 2, 0, 1, 2
+#> $ wow        <dbl> 0, 11, 4, 0, 0, 11, 357, 28, 4, 0, 21, 30, 2
+#> $ haha       <dbl> 2, 0, 2, 5, 10, 0, 5, 1, 3, 0, 2, 1, 12
+#> $ sad        <dbl> 0, 2, 2, 0, 0, 7, 48, 7, 3, 0, 0, 13, 0
+#> $ angry      <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2
+#> $ date_time  <dttm> 2020-01-21 15:17:27, 2020-01-21 15:05:39, 2020-01-21 13:4…
 ```
 
-La función `get_fb_post` retorna los siguiente valores.
+La función `get_posts` retorna los siguiente valores.
 
   - **page\_id** : identificador único de la página
   - **post\_id** : identificador único de la publicación
-  - **post\_text** : contenido del texto principal de la publicación
+  - **text** : contenido del texto principal de la publicación
   - **n\_comments** : cantidad de comentarios
   - **n\_shares** : cantidad de compartidos
-  - **date\_time** : hora y fecha en la que se realizó la
-publicación
-
-## Extraer las últimas 10 publicaciones de una pagina de Facebook e información sobre las reacciones de la publicación.
-
-``` r
-df <- get_fb_posts(session, pagename = "crhoy.comnoticias", n = 10, reactions = T)
-#> Se está redirigiendo el navegador a la url: https://m.facebook.com/crhoy.comnoticias ...
-tibble::glimpse(df)
-#> Observations: 13
-#> Variables: 13
-#> $ page_id           <chr> "265769886798719", "265769886798719", "2657698…
-#> $ post_id           <chr> "2806286759413673", "2806265406082475", "28062…
-#> $ post_text         <chr> "assange fue detenido hoy, tras resguardarse p…
-#> $ n_comments        <int> 0, 7, 63, 19, 5, 18, 17, 9, 36, 0, 5, 13, 170
-#> $ n_shares          <int> 2, 4, 114, 32, 7, 15, 20, 1, 4, 2, 11, 5, 104
-#> $ like              <int> 0, 15, 74, 67, 23, 26, 14, 18, 24, 10, 22, 51,…
-#> $ love              <int> 0, 0, 4, 0, 0, 1, 0, 0, 0, 0, 1, 2, 1
-#> $ wow               <int> 2, 0, 24, 23, 12, 15, 5, 2, 4, 0, 14, 2, 2
-#> $ haha              <int> 0, 6, 137, 0, 1, 4, 1, 1, 0, 0, 0, 3, 90
-#> $ sad               <int> 0, 2, 2, 44, 11, 0, 0, 0, 2, 0, 24, 0, 0
-#> $ angry             <int> 0, 1, 8, 0, 0, 2, 21, 0, 30, 0, 0, 4, 81
-#> $ reactions_by_user <list> [<tbl_df[2 x 3]>, <tbl_df[24 x 3]>, <tbl_df[2…
-#> $ date_time         <dttm> 2019-04-11 16:16:29, 2019-04-11 16:05:29, 201…
-tibble::glimpse(df$reactions_by_user[[1]])
-#> Observations: 2
-#> Variables: 3
-#> $ full_name     <chr> "Fiorella Monge Villalobos", "'Eidy Guevara"
-#> $ user_name     <chr> "/profile.php?id=100008106915815", "/eidy.guevara"
-#> $ type_reaction <chr> NA, NA
-```
-
-La función `get_fb_post` retorna los siguiente valores.
-
-  - **page\_id** : identificador único de la página
-  - **post\_id** : identificador único de la publicación
-  - **post\_text** : contenido del texto principal de la publicación
-  - **n\_comments** : cantidad de comentarios
-  - **n\_shares** : cantidad de compartidos
-  - **like** : cantidad de “me gusta”
-  - **love** : cantidad de “me encanta”
-  - **wow** : cantidad de “me sorprende”
-  - **haha** : cantidad de “me da risa”
-  - **sad** : cantidad de “me entristece”
-  - **angry** : cantidad de “me enoja”
-  - **reactions\_by\_user** :
-      - **full\_name** : nombre real del usuario
-      - **username** : nombre de la cuenta del usuario
-      - **type\_reaction** : reacción hecha por el usuario
-  - **date\_time** : hora y fecha en la que se realizó la
-publicación
-
-## Extraer las últimas 10 publicaciones de una pagina de Facebook, información sobre las reacciones y comentarios de la publicación.
-
-``` r
-df <- get_fb_posts(session, pagename = "crhoy.comnoticias", n = 10, reactions = T, commets = T)
-#> Se está redirigiendo el navegador a la url: https://m.facebook.com/crhoy.comnoticias ...
-tibble::glimpse(df)
-#> Observations: 13
-#> Variables: 14
-#> $ page_id           <chr> "265769886798719", "265769886798719", "2657698…
-#> $ post_id           <chr> "2806286759413673", "2806265406082475", "28062…
-#> $ post_text         <chr> "assange fue detenido hoy, tras resguardarse p…
-#> $ n_comments        <int> 1, 9, 64, 19, 5, 18, 17, 9, 37, 0, 5, 13, 172
-#> $ n_shares          <int> 2, 5, 116, 32, 7, 15, 21, 1, 4, 2, 11, 5, 104
-#> $ like              <int> 0, 16, 74, 67, 23, 26, 14, 18, 24, 10, 22, 51,…
-#> $ love              <int> 0, 0, 4, 0, 0, 1, 0, 0, 0, 0, 1, 2, 1
-#> $ wow               <int> 2, 1, 24, 23, 12, 16, 5, 2, 4, 0, 14, 2, 2
-#> $ haha              <int> 0, 6, 139, 0, 1, 4, 1, 1, 0, 0, 0, 3, 90
-#> $ sad               <int> 0, 2, 2, 44, 11, 0, 0, 0, 2, 0, 24, 0, 0
-#> $ angry             <int> 0, 1, 8, 0, 0, 2, 21, 0, 31, 0, 0, 4, 81
-#> $ reactions_by_user <list> [<tbl_df[2 x 3]>, <tbl_df[26 x 3]>, <tbl_df[2…
-#> $ comments          <list> [<tbl_df[2 x 3]>, <tbl_df[10 x 3]>, <tbl_df[6…
-#> $ date_time         <dttm> 2019-04-11 16:16:29, 2019-04-11 16:05:29, 201…
-```
-
-La función `get_fb_post` retorna los siguiente valores.
-
-  - **page\_id** : identificador único de la página
-  - **post\_id** : identificador único de la publicación
-  - **post\_text** : contenido del texto principal de la publicación
-  - **n\_comments** : cantidad de comentarios
-  - **n\_shares** : cantidad de compartidos
-  - **like** : cantidad de “me gusta”
-  - **love** : cantidad de “me encanta”
-  - **wow** : cantidad de “me sorprende”
-  - **haha** : cantidad de “me da risa”
-  - **sad** : cantidad de “me entristece”
-  - **angry** : cantidad de “me enoja”
-  - **reactions\_by\_user** :
-      - **full\_name** : nombre del usuario
-      - **username** : nombre de la cuenta del usuario
-      - **type\_reaction** : reacción hecha por el usuario
-  - **comments** :
-      - **full\_name** : nombre del usuario
-      - **user\_name** : nombre de la cuenta del usuario
-      - **text** : texto del comentario
-  - **date\_time** : hora y fecha en la que se realizó la
-publicación
-
-## Extraer las últimas 10 publicaciones de una pagina de Facebook, información sobre las reacciones, comentarios de la publicación y los usuario que compartieron la aplicación.
-
-``` r
-df <- get_fb_posts(session, pagename = "crhoy.comnoticias", n = 10, reactions = T, commets = T, shares = T)
-#> Se está redirigiendo el navegador a la url: https://m.facebook.com/crhoy.comnoticias ...
-tibble::glimpse(df)
-#> Observations: 13
-#> Variables: 15
-#> $ page_id           <chr> "265769886798719", "265769886798719", "2657698…
-#> $ post_id           <chr> "2806286759413673", "2806265406082475", "28062…
-#> $ post_text         <chr> "assange fue detenido hoy, tras resguardarse p…
-#> $ n_comments        <int> 2, 10, 68, 19, 5, 18, 17, 9, 37, 0, 5, 13, 173
-#> $ n_shares          <int> 2, 5, 119, 32, 7, 16, 21, 1, 4, 2, 11, 5, 105
-#> $ like              <int> 2, 17, 74, 69, 23, 26, 14, 18, 24, 10, 22, 52,…
-#> $ love              <int> 0, 0, 4, 0, 0, 1, 0, 0, 0, 0, 1, 2, 1
-#> $ wow               <int> 2, 1, 25, 23, 12, 16, 5, 2, 4, 0, 14, 2, 2
-#> $ haha              <int> 0, 6, 140, 0, 1, 4, 1, 1, 0, 0, 0, 3, 90
-#> $ sad               <int> 0, 2, 3, 44, 11, 0, 0, 0, 2, 0, 24, 0, 0
-#> $ angry             <int> 0, 1, 8, 0, 0, 2, 22, 0, 31, 0, 0, 4, 81
-#> $ reactions_by_user <list> [<tbl_df[4 x 3]>, <tbl_df[27 x 3]>, <tbl_df[2…
-#> $ comments          <list> [<tbl_df[3 x 3]>, <tbl_df[10 x 3]>, <tbl_df[6…
-#> $ shares            <list> [NULL, <tbl_df[3 x 2]>, <tbl_df[30 x 2]>, <tb…
-#> $ date_time         <dttm> 2019-04-11 16:16:29, 2019-04-11 16:05:29, 201…
-```
-
-La función `get_fb_post` retorna los siguiente valores.
-
-  - **page\_id** : identificador único de la página
-  - **post\_id** : identificador único de la publicación
-  - **post\_text** : contenido del texto principal de la publicación
-  - **n\_comments** : cantidad de comentarios
-  - **n\_shares** : cantidad de compartidos
-  - **like** : cantidad de “me gusta”
-  - **love** : cantidad de “me encanta”
-  - **wow** : cantidad de “me sorprende”
-  - **haha** : cantidad de “me da risa”
-  - **sad** : cantidad de “me entristece”
-  - **angry** : cantidad de “me enoja”
-  - **reactions\_by\_user** :
-      - **full\_name** : nombre del usuario
-      - **username** : nombre de la cuenta del usuario
-      - **type\_reaction** : reacción hecha por el usuario
-  - **comments** :
-      - **full\_name** : nombre del usuario
-      - **user\_name** : nombre de la cuenta del usuario
-      - **text** : texto del comentario
-  - **shares** :
-      - **ful\_name** : nombre del usuario
-      - **user\_name** : nombre de la cuenta de usuario
+  - **like**: cantidad de me gusta
+  - **love**: cantidad de me encanta
+  - **wow**: cantidad de me sorprende
+  - **haha**: cantidad de risas
+  - **sad**: cantidad de me entristece
+  - **angry**: cantidad de me enoja
   - **date\_time** : hora y fecha en la que se realizó la publicación
 
-### Cerrar el servidor
+## Comentarios de una publicación en especifico
+
+Para estraer los comentarios de una publicación debemos indicar el id de
+la página y el id de la publicación que queremos analizar.
 
 ``` r
-stop_server(session)
-#>  ✔ Se cerró con éxito el servidor de Selenium.
-#> NULL
+
+comentarios <- bot_facebook$get_comments(page_id = "142921462922", post_id = "10158463086367923")
+tibble::glimpse(comentarios)
+#> List of 1
+#>  $ :Classes 'tbl_df', 'tbl' and 'data.frame':    11 obs. of  5 variables:
+#>   ..$ page_id  : chr [1:11] "142921462922" "142921462922" "142921462922" "142921462922" ...
+#>   ..$ post_id  : chr [1:11] "10158463086367923" "10158463086367923" "10158463086367923" "10158463086367923" ...
+#>   ..$ full_name: chr [1:11] "Sergio Cam" "Eliomar Vargas" "Sergio Cam" "Raúl Buendía" ...
+#>   ..$ user_name: chr [1:11] "/sergio.camposbarquero" "/eliomar.vargas2" "/sergio.camposbarquero" "/raul.buendiaurena" ...
+#>   ..$ text     : chr [1:11] "suponiendo que son 1386 millones de personas, 300 infectados es el 0,00021 de la población, por lo que la tasa "| __truncated__ "sergio cam pero cual de las dos tiene mas potencial de expansión?" "eliomar vargas el hambre evidentemente! hay muertos por hambre en todo el mundo! y ni se diga la escasez de agua!" "sergio cam el hambre es un problema endémico en ciertas zonas del mundo, relacionada con problemas estructurale"| __truncated__ ...
 ```
+
+La función `get_comments` retorna los siguiente valores
+
+  - **page\_id**: identificador de la página
+  - **post\_id**: identificador de la publicación
+  - **full\_name**: nombre del usuario que realizó el comentario
+  - **user\_name**: nombre de usuario (único) que realizó el comentario
+  - **text**: texto del comentario
