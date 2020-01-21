@@ -32,145 +32,76 @@ Este paquete utiliza selenium para simular la interacción de un usuario con su 
 
 ```{r iniciar_servidor}
 library(socialscrapeR)
-session <- start_server(port = 4568L)
+bot_facebook = fb_bot$new()
 ```
 
 ## Iniciar sesión en Facebook
 
-```{r facebook_login}
-login_facebook(x = session,
-               username = "dev.aguero@gmail.com",
-               password = "anx21ysi_face.")
+```{r facebook_login, echo=F}
+bot_facebook$login(
+  username = "dev.aguero@gmail.com",
+  password = "anx21ysi_face.")
+```
+
+```{r facebook_login2, eval=F}
+bot_facebook$login(
+  username = "******@gmai.com",
+  password = "********")
 ```
 
 Nota: Para evitar exponer tus credenciales en tu código se recomienda el uso de paquete [keying](https://github.com/r-lib/keyring).
 
-## Función `get_fb_posts`
+## Función `get_posts`
 
 Esta función nos retorna un data.frame con la información de las últimas `n` publicaciones de una página, esta función recibe los siguiente parámetros:
 
   + x = una conexión con selenium creada con la función start_server en la que ya se inicio sesión en una cuenta de Facebook con la función `login_facebook`.
   + **pagename**: nombre de la página
   + **n** : cantidad mínima de publicaciones a descargar
-  + **reactions** si el valor es TRUE se retorna en un data.frame información sobre las reacciones de los usuario a la publicación
-  + **comments** : si el valor es TRUE se retorna en un data.frame el contenido de los comentarios de la publicación
-  + **shares** :  si el valor es TRUE se retorna en un data.frame información sobre los usuarios que compartieron la publicación
+  + **reactions**: si el valor es TRUE se retorna en un data.frame información sobre las reacciones de los usuario a la publicación
   
 Veamos algunos ejemplos :
 
 ## Extraer las últimas 10 publicaciones de una pagina de Facebook 
 
 ```{r}
-df <- get_fb_posts(session, pagename = "crhoy.comnoticias", n = 10)
+df <- bot_facebook$get_posts(pagename = "ameliarueda", n = 10, reactions = T)
 tibble::glimpse(df)
 ```
 
-La función `get_fb_post` retorna los siguiente valores.
+La función `get_posts` retorna los siguiente valores.
 
   + **page_id** : identificador único de la página
   + **post_id** : identificador único de la publicación
-  + **post_text** : contenido del texto principal de la publicación
+  + **text** : contenido del texto principal de la publicación
   + **n_comments** : cantidad de comentarios
   + **n_shares** : cantidad de compartidos
+  + **like**: cantidad de me gusta
+  + **love**: cantidad de me encanta
+  + **wow**: cantidad de me sorprende
+  + **haha**: cantidad de risas
+  + **sad**: cantidad de me entristece
+  + **angry**: cantidad de me enoja
   + **date_time** : hora y fecha en la que se realizó la publicación
   
   
-## Extraer las últimas 10 publicaciones de una pagina de Facebook e información sobre las reacciones de la publicación.
+## Comentarios de una publicación en especifico
+
+Para estraer los comentarios de una publicación debemos indicar el id de la página y el id de la publicación que queremos analizar.
 
 ```{r}
-df <- get_fb_posts(session, pagename = "crhoy.comnoticias", n = 10, reactions = T)
-tibble::glimpse(df)
-tibble::glimpse(df$reactions_by_user[[1]])
+
+comentarios <- bot_facebook$get_comments(page_id = "142921462922", post_id = "10158463086367923")
+tibble::glimpse(comentarios)
 ```
 
-La función `get_fb_post` retorna los siguiente valores.
+La función `get_comments` retorna los siguiente valores
 
-  + **page_id** : identificador único de la página
-  + **post_id** : identificador único de la publicación
-  + **post_text** : contenido del texto principal de la publicación
-  + **n_comments** : cantidad de comentarios
-  + **n_shares** : cantidad de compartidos
-  + **like** : cantidad de "me gusta"
-  + **love** : cantidad de "me encanta"
-  + **wow** : cantidad de "me sorprende"
-  + **haha** : cantidad de "me da risa"
-  + **sad** : cantidad de "me entristece"
-  + **angry** : cantidad de "me enoja"
-  + **reactions_by_user** : 
-    + **full_name** : nombre real del usuario
-    + **username** : nombre de la cuenta del usuario
-    + **type_reaction** : reacción hecha por el usuario
-  + **date_time** : hora y fecha en la que se realizó la publicación
++ **page_id**: identificador de la página
++ **post_id**: identificador de la publicación
++ **full_name**: nombre del usuario que realizó el comentario
++ **user_name**: nombre de usuario (único) que realizó el comentario
++ **text**: texto del comentario
 
-
-## Extraer las últimas 10 publicaciones de una pagina de Facebook, información sobre las reacciones y comentarios de la publicación.
-
-```{r}
-df <- get_fb_posts(session, pagename = "crhoy.comnoticias", n = 10, reactions = T, commets = T)
-tibble::glimpse(df)
-```
-
-La función `get_fb_post` retorna los siguiente valores.
-
-  + **page_id** : identificador único de la página
-  + **post_id** : identificador único de la publicación
-  + **post_text** : contenido del texto principal de la publicación
-  + **n_comments** : cantidad de comentarios
-  + **n_shares** : cantidad de compartidos
-  + **like** : cantidad de "me gusta"
-  + **love** : cantidad de "me encanta"
-  + **wow** : cantidad de "me sorprende"
-  + **haha** : cantidad de "me da risa"
-  + **sad** : cantidad de "me entristece"
-  + **angry** : cantidad de "me enoja"
-  + **reactions_by_user** : 
-    + **full_name** : nombre del usuario
-    + **username** : nombre de la cuenta del usuario
-    + **type_reaction** : reacción hecha por el usuario
-  + **comments** : 
-    + **full_name** : nombre del usuario
-    + **user_name** : nombre de la cuenta del usuario
-    + **text** : texto del comentario
-  + **date_time** : hora y fecha en la que se realizó la publicación
-
-## Extraer las últimas 10 publicaciones de una pagina de Facebook, información sobre las reacciones, comentarios de la publicación y los usuario que compartieron la aplicación.
-
-```{r}
-df <- get_fb_posts(session, pagename = "crhoy.comnoticias", n = 10, reactions = T, commets = T, shares = T)
-tibble::glimpse(df)
-```
-
-La función `get_fb_post` retorna los siguiente valores.
-
-  + **page_id** : identificador único de la página
-  + **post_id** : identificador único de la publicación
-  + **post_text** : contenido del texto principal de la publicación
-  + **n_comments** : cantidad de comentarios
-  + **n_shares** : cantidad de compartidos
-  + **like** : cantidad de "me gusta"
-  + **love** : cantidad de "me encanta"
-  + **wow** : cantidad de "me sorprende"
-  + **haha** : cantidad de "me da risa"
-  + **sad** : cantidad de "me entristece"
-  + **angry** : cantidad de "me enoja"
-  + **reactions_by_user** : 
-    + **full_name** : nombre del usuario
-    + **username** : nombre de la cuenta del usuario
-    + **type_reaction** : reacción hecha por el usuario
-  + **comments** : 
-    + **full_name** : nombre del usuario
-    + **user_name** : nombre de la cuenta del usuario
-    + **text** : texto del comentario
-  + **shares** :
-    + **ful_name** : nombre del usuario
-    + **user_name** : nombre de la cuenta de usuario
-  + **date_time** : hora y fecha en la que se realizó la publicación
-
-
-### Cerrar el servidor 
-
-```{r}
-stop_server(session)
-```
 
   
